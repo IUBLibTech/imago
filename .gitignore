@@ -4,6 +4,11 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile '~/.gitignore_global'
 
+# hydra secret stuff
+config/blacklight.yml
+config/solr.yml
+config/fedora.yml
+
 # bad gem etiquette, man
 .ruby-version
 .ruby-gemset
