@@ -9,6 +9,9 @@ config/blacklight.yml
 config/solr.yml
 config/fedora.yml
 
+#db-related
+dump.rdb
+
 # bad gem etiquette, man
 .ruby-version
 .ruby-gemset
