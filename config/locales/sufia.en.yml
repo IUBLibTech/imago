@@ -1,11 +1,11 @@
 en:
   sufia:
-    product_name:       "Sufia"
-    product_twitter_handle: "@HydraSphere"
-    institution_name:   "Institution Name"
+    product_name:       "Imago"
+    product_twitter_handle: ""
+    institution_name:   "Indiana University"
 #    institution_name_full:   "The Institution Name"
-    account_name:       "My Institution Account Id"
+    account_name:       ""
     directory:
-      suffix:           "@example.org"
+    suffix:           "@indiana.edu"
     footer:
-      copyright_html: "<strong>Copyright &copy; 2016 Project Hydra</strong> Licensed under the Apache License, Version 2.0"
+    copyright_html: ""
