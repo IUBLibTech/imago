@@ -1,8 +1,7 @@
 Rails.application.routes.draw do
-  Hydra::BatchEdit.add_routes(self)
-  mount Qa::Engine => '/authorities'
-
+  match '/contact' => redirect('/') , via: [:get, :post]
   
+  Hydra::BatchEdit.add_routes(self)
   mount Blacklight::Engine => '/'
   
     concern :searchable, Blacklight::Routes::Searchable.new
@@ -11,10 +10,17 @@ Rails.application.routes.draw do
     concerns :searchable
   end
 
-  devise_for :users
+
+
+  # modified for imago to disable account creation through the interface
+  # see http://stackoverflow.com/questions/6734323/how-do-i-remove-the-devise-route-to-sign-up
+  devise_for :users, :controllers => { :registrations => "registrations" }
   mount CurationConcerns::Engine, at: '/'
   resources :welcome, only: 'index'
-  root 'sufia/homepage#index'
+  
+  #modified for imago to redirect home page to main 'browse' page
+  #root 'sufia/homepage#index'
+  root :to => redirect('/catalog')
   curation_concerns_collections
   curation_concerns_basic_routes
   curation_concerns_embargo_management
@@ -31,6 +37,15 @@ Rails.application.routes.draw do
       delete 'clear'
     end
   end
+
+  # modified for imago to add routes for IU PURLS
+  get '/purl/thumbnail/:id' => 'purl#thumbnail'
+  get '/purl/:id' => 'purl#default'
+  get '/purl/full/:id' => 'purl#full'
+
+  #this one isn't implemented yet
+  #get '/purl/archive/:id' => ''
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
