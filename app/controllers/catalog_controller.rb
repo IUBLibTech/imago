@@ -51,16 +51,23 @@ class CatalogController < ApplicationController
 
     # solr fields that will be treated as facets by the blacklight application
     #   The ordering of the field names is the order of the display
-    config.add_facet_field solr_name("human_readable_type", :facetable), label: "Type", limit: 5
-    config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5
-    config.add_facet_field solr_name("creator", :facetable), label: "Creator", limit: 5
-    config.add_facet_field solr_name("contributor", :facetable), label: "Contributor", limit: 5
+    
     config.add_facet_field solr_name("keyword", :facetable), label: "Keyword", limit: 5
-    config.add_facet_field solr_name("subject", :facetable), label: "Subject", limit: 5
-    config.add_facet_field solr_name("language", :facetable), label: "Language", limit: 5
-    config.add_facet_field solr_name("based_near", :facetable), label: "Location", limit: 5
-    config.add_facet_field solr_name("publisher", :facetable), label: "Publisher", limit: 5
+    # config.add_facet_field solr_name("subject", :facetable), label: "Subject", limit: 5
+    # config.add_facet_field solr_name("language", :facetable), label: "Language", limit: 5
+    # config.add_facet_field solr_name("based_near", :facetable), label: "Location", limit: 5
+    # config.add_facet_field solr_name("publisher", :facetable), label: "Publisher", limit: 5
     config.add_facet_field solr_name("file_format", :facetable), label: "File Format", limit: 5
+    config.add_facet_field solr_name("kingdom", :facetable), label: "Kingdom", limit: 5
+    config.add_facet_field solr_name("phylum", :facetable), label: "Phylum", limit: 5
+    config.add_facet_field solr_name("dwcclass", :facetable), label: "Class", limit: 5
+    config.add_facet_field solr_name("order", :facetable), label: "Order", limit: 5
+    config.add_facet_field solr_name("family", :facetable), label: "Family", limit: 5
+    config.add_facet_field solr_name("genus", :facetable), label: "Genus", limit: 5
+    config.add_facet_field solr_name("scientific_name", :facetable), label: "Scientific Name", limit: 5
+    config.add_facet_field solr_name("country", :facetable), label: "Country", limit: 5
+    config.add_facet_field solr_name("county", :facetable), label: "County", limit: 5
+
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request
@@ -74,19 +81,15 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("keyword", :stored_searchable), label: "Keyword", itemprop: 'keywords', link_to_search: solr_name("keyword", :facetable)
     config.add_index_field solr_name("subject", :stored_searchable), label: "Subject", itemprop: 'about', link_to_search: solr_name("subject", :facetable)
     config.add_index_field solr_name("creator", :stored_searchable), label: "Creator", itemprop: 'creator', link_to_search: solr_name("creator", :facetable)
-    config.add_index_field solr_name("contributor", :stored_searchable), label: "Contributor", itemprop: 'contributor', link_to_search: solr_name("contributor", :facetable)
+    config.add_index_field solr_name("contributor", :stored_searchable), label: "Contributor", itemprop: 'contributor', helper_method: :index_field_link, field_name: 'contributor'
     config.add_index_field solr_name("proxy_depositor", :symbol), label: "Depositor", helper_method: :link_to_profile
-    config.add_index_field solr_name("depositor"), label: "Owner", helper_method: :link_to_profile
     config.add_index_field solr_name("publisher", :stored_searchable), label: "Publisher", itemprop: 'publisher', link_to_search: solr_name("publisher", :facetable)
     config.add_index_field solr_name("based_near", :stored_searchable), label: "Location", itemprop: 'contentLocation', link_to_search: solr_name("based_near", :facetable)
     config.add_index_field solr_name("language", :stored_searchable), label: "Language", itemprop: 'inLanguage', link_to_search: solr_name("language", :facetable)
-    config.add_index_field solr_name("date_uploaded", :stored_sortable, type: :date), label: "Date Uploaded", itemprop: 'datePublished'
-    config.add_index_field solr_name("date_modified", :stored_sortable, type: :date), label: "Date Modified", itemprop: 'dateModified'
-    config.add_index_field solr_name("date_created", :stored_searchable), label: "Date Created", itemprop: 'dateCreated'
-    config.add_index_field solr_name("rights", :stored_searchable), label: "Rights", helper_method: :rights_statement_links
     config.add_index_field solr_name("resource_type", :stored_searchable), label: "Resource Type", link_to_search: solr_name("resource_type", :facetable)
     config.add_index_field solr_name("file_format", :stored_searchable), label: "File Format", link_to_search: solr_name("file_format", :facetable)
-    config.add_index_field solr_name("identifier", :stored_searchable), label: "Identifier", helper_method: :index_field_link, field_name: 'identifier'
+    config.add_index_field solr_name("identifier", :stored_searchable), label: "Identifier", field_name: 'identifier'
+    config.add_index_field solr_name("scientific_name", :stored_searchable), label: "Scientific Name", helper_method: :index_field_link, field_name: 'scientific_name'
 
     # solr fields to be displayed in the show (single result) view
     #   The ordering of the field names is the order of the display
@@ -106,6 +109,30 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("resource_type", :stored_searchable), label: "Resource Type"
     config.add_show_field solr_name("format", :stored_searchable), label: "File Format"
     config.add_show_field solr_name("identifier", :stored_searchable), label: "Identifier"
+
+    config.add_show_field solr_name("collection_code", :stored_searchable), label: "Collection Code"
+    config.add_show_field solr_name("catalog_number", :stored_searchable), label: "Catalog Number"
+    config.add_show_field solr_name("other_catalog_numbers", :stored_searchable), label: "Other Catalog Numbers"
+    config.add_show_field solr_name("continent", :stored_searchable), label: "Continent"
+    config.add_show_field solr_name("country", :stored_searchable), label: "Country"
+    config.add_show_field solr_name("state_province", :stored_searchable), label: "State / Province"
+    config.add_show_field solr_name("county", :stored_searchable), label: "County"
+    config.add_show_field solr_name("higher_geography", :stored_searchable), label: "Higher Geography"
+    config.add_show_field solr_name("locality", :stored_searchable), label: "Locality"
+    config.add_show_field solr_name("decimal_latitude", :stored_searchable), label: "Decimal Latitude"
+    config.add_show_field solr_name("decimal_longitude", :stored_searchable), label: "Decimal Longitude"
+    
+    config.add_show_field solr_name("kingdom", :stored_searchable), label: "Kingdom"
+    config.add_show_field solr_name("phylum", :stored_searchable), label: "Phylum"
+    config.add_show_field solr_name("dwcclass", :stored_searchable), label: "Class"
+    config.add_show_field solr_name("order", :stored_searchable), label: "Order"
+    config.add_show_field solr_name("family", :stored_searchable), label: "Family"
+    config.add_show_field solr_name("genus", :stored_searchable), label: "Genus"
+    config.add_show_field solr_name("specific_epithet", :stored_searchable), label: "Specific Epithet"
+    config.add_show_field solr_name("infraspecific_epithet", :stored_searchable), label: "Infraspecific Epithet"
+    config.add_show_field solr_name("scientific_name", :stored_searchable), label: "Scientific Name"
+    config.add_show_field solr_name("type_status", :stored_searchable), label: "Type Status"
+    config.add_show_field solr_name("basis_of_record", :stored_searchable), label: "Basis Of Record"
 
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields
