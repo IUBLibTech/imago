@@ -1,0 +1,36 @@
+<h2><%= t('.header') %></h2>
+<table class="table table-striped <%= dom_class(presenter) %> attributes" <%= presenter.microdata_type_to_html %>>
+  <thead>
+  <tr><th><%= t('.attribute_name_label') %></th><th><%= t('.attribute_values_label') %></th></tr>
+  </thead>
+  <tbody>
+  <%= render 'attribute_rows', presenter: presenter %>
+  <%= presenter.attribute_to_html(:embargo_release_date) %>
+  <%= presenter.attribute_to_html(:lease_expiration_date) %>
+  <%= presenter.attribute_to_html(:rights, render_as: :rights) %>
+  <%= presenter.attribute_to_html(:collection_code) %>
+  <%= presenter.attribute_to_html(:catalog_number) %>
+  <%= presenter.attribute_to_html(:other_catalog_numbers) %>
+  <%= presenter.attribute_to_html(:continent) %>
+  <%= presenter.attribute_to_html(:country) %>
+  <%= presenter.attribute_to_html(:state_province) %>
+  <%= presenter.attribute_to_html(:county) %>
+  <%= presenter.attribute_to_html(:higher_geography) %>
+  <%= presenter.attribute_to_html(:locality) %>
+  <%= presenter.attribute_to_html(:decimal_latitude) %>
+  <%= presenter.attribute_to_html(:decimal_longitude) %>
+  <%= presenter.attribute_to_html(:kingdom) %>
+  <%= presenter.attribute_to_html(:phylum) %>
+  <%= presenter.attribute_to_html(:dwcclass, label: 'Class') %>
+  <%= presenter.attribute_to_html(:order) %>
+  <%= presenter.attribute_to_html(:family) %>
+  <%= presenter.attribute_to_html(:genus) %>
+  <%= presenter.attribute_to_html(:specific_epithet) %>
+  <%= presenter.attribute_to_html(:infraspecific_epithet) %>
+  <%= presenter.attribute_to_html(:scientific_name) %>
+  <%= presenter.attribute_to_html(:scientific_name_authorship) %>
+  <%= presenter.attribute_to_html(:type_status) %>
+  <%= presenter.attribute_to_html(:basis_of_record) %>
+
+  </tbody>
+</table>
