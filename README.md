@@ -1,5 +1,5 @@
 # Imago
-Imago is a instance of Sufia 7, customized to work with data from the Center for Biological Research Collections (CBRC) at Indiana University. See http://www.iu.edu/~cbrc/ for more details about the collections themselves.
+Imago is an instance of Sufia 7, customized to work with data from the Center for Biological Research Collections (CBRC) at Indiana University. See http://www.iu.edu/~cbrc/ for more details about the collections themselves.
 
 This project is currently based on Sufia 7.0.
 
