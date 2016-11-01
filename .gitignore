@@ -12,6 +12,9 @@ config/fedora.yml
 #db-related
 dump.rdb
 
+#local thing
+.appserver-path
+
 # bad gem etiquette, man
 .ruby-version
 .ruby-gemset
