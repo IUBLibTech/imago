@@ -73,49 +73,40 @@ module Cbrc
             file_set_actor = CurationConcerns::Actors::FileSetActor.new(file_set, owner)
             file_set_actor.create_metadata(gf, visibility: gf.visibility)
             file_set_actor.create_content(File.open(image_path))
-            #characterize_and_derive(gf) ---> don't think this is necessary anymore
-
 
           else
-            #for now, we won't process if file already exists - will not currently update images anyway
-            print "WARNING: Item #{cat_num} alreadu exists. Not importing again.\n"
-            #print "Existing record found for #{cat_num}.\n"
-            ### (gf.attributes.to_a.sort & mod.sort) - m.sort
-            #gf = GenericFile.find(gfs.first['id'])
-            #gf.update(multivalue_row.to_h)
-            # TODO Update file data when updating metadata.
-            #if gf.save
-            #  print "Updated metadata for #{cat_num}.\n"
-            #else
-            #  print "WARNING: Update failed: #{gf.errors.full_messages}\n"
-            #end
-            #characterize_and_derive(gf)
+            print "Existing record found for #{cat_num}.\n"
+            gf = Work.find(gfs.first['id'])
+            gf.update(multivalue_row.to_h)
+
+            gf.title = [cat_num]
+            gf.depositor = owner.email
+            gf.edit_users = [owner.email]
+            gf.rights = ['http://creativecommons.org/licenses/by-nc/3.0/us/']
+            gf.collection_code = ['herbarium']
+            gf.identifier = ["http://purl.dlib.indiana.edu/iudl/herbarium/#{cat_num}"]
+            gf.set_read_groups( ["public"], [])
+
+            #delete old image (assumes only 1)
+            FileSet.find((Work.search_with_conditions id: gf.id).first['hasRelatedImage_ssim'].first).destroy
+
+            #add new image
+            file_set = ::FileSet.new
+            file_set_actor = CurationConcerns::Actors::FileSetActor.new(file_set, owner)
+            file_set_actor.create_metadata(gf, visibility: gf.visibility)
+            file_set_actor.create_content(File.open(image_path))
+
+            if gf.save
+              print "Updated #{cat_num}.\n"
+            else
+              print "WARNING: Update failed: #{gf.errors.full_messages}\n"
+            end
           end
         end
         print "------\n";
         print "Ingest complete\n";
         print "------\n";
       end
-
-      private
-
-      def Tasks.characterize_and_derive(gf)
-        print "Characterizing..."
-        if gf.characterize
-          print "Success!\n"
-        else
-          print "WARNING: Failed to characterize.\n"
-        end
-
-        print "Deriving..."
-        gf.create_derivatives
-        if gf.save
-          print "Success!\n"
-        else
-          print "WARNING: Failed to derive.\n"
-        end
-      end
-
     end
   end
 end
