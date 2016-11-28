@@ -59,7 +59,7 @@ class CatalogController < ApplicationController
     # config.add_facet_field solr_name("publisher", :facetable), label: "Publisher", limit: 5
     config.add_facet_field solr_name("file_format", :facetable), label: "File Format", limit: 5
     config.add_facet_field solr_name("kingdom", :facetable), label: "Kingdom", limit: 5
-    config.add_facet_field solr_name("phylum", :facetable), label: "Phylum", limit: 5
+    config.add_facet_field solr_name("phylum", :facetable), label: "Phylum or Division", limit: 5
     config.add_facet_field solr_name("dwcclass", :facetable), label: "Class", limit: 5
     config.add_facet_field solr_name("order", :facetable), label: "Order", limit: 5
     config.add_facet_field solr_name("family", :facetable), label: "Family", limit: 5
@@ -123,7 +123,7 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("decimal_longitude", :stored_searchable), label: "Decimal Longitude"
     
     config.add_show_field solr_name("kingdom", :stored_searchable), label: "Kingdom"
-    config.add_show_field solr_name("phylum", :stored_searchable), label: "Phylum"
+    config.add_show_field solr_name("phylum", :stored_searchable), label: "Phylum or Division"
     config.add_show_field solr_name("dwcclass", :stored_searchable), label: "Class"
     config.add_show_field solr_name("order", :stored_searchable), label: "Order"
     config.add_show_field solr_name("family", :stored_searchable), label: "Family"
