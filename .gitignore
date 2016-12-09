@@ -21,7 +21,6 @@ dump.rdb
 ruby-version
 ruby-gemset
 .rvmrc
-Gemfile.lock
 
 *.rbc
 capybara-*.html
