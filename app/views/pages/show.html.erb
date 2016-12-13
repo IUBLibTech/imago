@@ -1,53 +1,19 @@
 <h1>About</h1> 
 <!-- <h2>What is Imago?</h2> -->
-<p>Imago is a prototypic 'next-generation' digital repository that is dynamically linked to scientific specimen 
-collection databases.</p>
 
-<p>Imago uses a Fedora 4 repository with Sufia 7 as an extensible Hydra Head with rich metadata that meets the 
-Dublin and Darwin Core standards.  The repository holds 2-dimensional and 3-dimensional specimen images, associated 
-text files, and other media types.  The dynamic linkage to Symbiota (an inter-institutional collaborative digitization 
-platform) and Specify (a collection management software suite) enables the institutional master databases to propagate 
-metadata for the digital resources to Imago, where they are publicly available.</p>
-
-<p>The dynamic links provide cyberinfrastructure support for high-efficiency digitization workflows that typically have 
-incremental compilation of metadata.  Skeletal database records created during specimen digitization can be augmented 
-when the full collection information is added, and enhanced when collection localities are georeferenced.</p>
-
-<p>The dynamic links also provide cyberinfrastructure support for the inherently dynamic nature of biodiversity 
-research and biocollection curation.  Imago is a critical asset for an institutionally based, dynamic information 
-system that efficiently curates these digital resources (along with the physical collections) as our knowledge of 
-biodiversity advances, taxonomy changes, and specimens are annotated.  When biocollection information is updated 
-in a master database, it propagates to all dependent records and digital resources, which are then available to data 
-aggregators and other potential users of this publicly available information.</p>
-
-<p>Imago means 'image' in Latin.  The biological term 'imago' refers the adult stage of insects after they have 
-completed metamorphosis from earlier juvenile forms.  Specimen digitization forms the final stage of biocollection 
-management, and at Indiana University, Imago is where our specimen images go.</p>
+<p>Imago is a prototypic 'next-generation' digital repository that is dynamically linked to scientific specimen collection databases.</p>
+ 
+<p>Imago means 'image' in Latin and also refers to the adult stage of insects after metamorphosis.  Similarly, specimen digitization is a metamorphosis of biocollection specimens from physical object to born-digital entity, so Imago is where our specimens’ new lives as a digital objects begin.</p>
+ 
+<p>Imago uses a <a href="http://fedorarepository.org/">Fedora 4</a> repository with <a href="http://sufia.io/">Sufia 7</a> as an extensible Hydra Head with rich metadata that utilizes boththe Dublin Core and Darwin Core standards. The repository holds 2-dimensional and 3-dimensional specimen images, associated text files, and other media types. The dynamic linkage to Symbiota (an inter-institutional collaborative digitization platform) and Specify (a collection management software suite) enables the institutional master databases to propagate metadata for the digital resources to Imago, where they are publicly available.</p>
+ 
+<p>Dynamic cyberinfrastructure supports high-efficiency digitization workflows, even when digital metadata are not readily available.  Skeletal database records created at the time of digitization can later be augmented by automated capture from specimen tags and enhanced by georeferencing. Imago’s cyberinfrastructure supports the inherently dynamic nature of biodiversity research and biocollection curation.  As our knowledge of biodiversity advances, information about the physical specimens, including their taxonomy, changes.  As biocollection metadata  are updated in our master database, they propagate to all dependent records and digital resources and then are made available to data aggregators and the broader scientific and public communities.</p>
+ 
+<p>The <a href="http://www.indiana.edu/~cbrc/">Center for Biological Research Collections</a> (CBRC) is a consortium of research-based scientific collections at Indiana University: The <a href="http://www.bio.indiana.edu/faculty/facilities/herbarium.shtml">Indiana University Herbarium</a>, the <a href="http://www.indiana.edu/~palcoll/">Indiana University Paleontology Collection</a>, and the <a href="http://www.indiana.edu/~zooarch/home.php">William R. Adams Zooarchaeology Laboratory</a>.  The Center focuses on collections of biological specimens, including fossils and archaeological remains that have shared taxonomic, geographic, and temporal metadata requirements. The CBRC is funded by the College of Arts and Sciences, the Office for the Vice President for Research, the Department of Biology, the Department of Anthropology, and the Department of Geological Sciences to enhance collection-based research and education in diversity, zooarcheology, paleontology, and related disciplines by providing shared infrastructural and data management support.</p>
+ 
+<p>This repository was developed by the <a href="https://libraries.indiana.edu/">Indiana University Libraries</a>, in conjunction with the CBRC.</p>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<p>The Center for Biological Research Collections (CBRC) is a consortium of research-based scientific collections at Indiana University. The CBRC is funded by the College of Arts and Sciences,
-  the Office for the Vice President for Research, the Department of Biology, the Department of Anthropology, and the Department of Geological Sciences.</p>
-<p>The CBRC enhances collection-based research and education in biodiversity, zooarchaeology, paleontology, and related disciplines by providing shared infrastructural and data management
-  support for IU’s biological research collections. The Center focuses on collections of biological specimens, including fossils and archaeological remains that have shared taxonomic,
-  geographic, and temporal metadata requirements.</p>
-<p>This repository was developed by the Indiana University Libraries, in conjunction with the CBRC, to provide an archive for the digital assets generated in the Indiana University Herbarium,
-  the Indiana University Paleontology Collection, and the William R. Adams Zooarchaeology Laboratory.</p>
 <p>&nbsp;</p>
 <%= editable_content_block @page %>
 <%= tiny_mce_stuff if can? :update, ContentBlock%>
