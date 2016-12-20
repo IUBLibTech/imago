@@ -14,7 +14,7 @@ module Cbrc
         idsTooSmall = Array[]
         puts "STARING IMAGO IMAGE SCAN"
         x = 0;
-        Work.find_each("#{Solrizer.solr_name('depositor', :symbol)}:\"jhallida@indiana.edu\"", fl: "id") do |id|
+        Work.find_each("#{Solrizer.solr_name('depositor', :symbol)}:\"herbaria@indiana.edu\"", fl: "id") do |id|
           x = x + 1
           if x % 100 == 0
             puts "Read #{x} objects"
