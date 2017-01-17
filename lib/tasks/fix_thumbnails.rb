@@ -2,8 +2,8 @@
 # Ruby process to rebuild thumbnails within a specific nunmerical range
 #
 # Created because some thumbnails were accidentally deleted
-# Task is run with 'rake cbrc:import:delete_herbs[filename.csv]
-# filename.csv is a list of files to delete, one per line, with 'catalog_number' as a header for the CSV file
+# Task is run with 'rake cbrc:fix_thumbnails:fix_thumbnails[start,end]
+# start and end are numerical ranges for images catalog numbers (1002,1014) for example
 #
 
 module Cbrc
