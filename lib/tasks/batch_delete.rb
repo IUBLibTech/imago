@@ -2,7 +2,7 @@
 # Ruby process for batch deletion, called by rake tasks
 #
 # This is used to delete a batch of records. Needed because we had to delete records for endagered species
-# Task is run with 'rake cbrc:import:delete_herbs[filename.csv]
+# Task is run with 'rake cbrc:delete:delete_herbs[filename.csv]
 # filename.csv is a list of files to delete, one per line, with 'catalog_number' as a header for the CSV file
 #
 
