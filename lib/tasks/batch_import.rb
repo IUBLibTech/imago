@@ -17,17 +17,20 @@ module Cbrc
       # Images are in same directory as CSV file, filename format "{catalog_number}-full.jpg"
       # Files will be deleted after ingest only if deleteafteringest is set to "YES"
       def Tasks.import_herbs(data_file, owner_username, deleteafteringest)
-        print "------\n";
-        print "Ingest batch file started at " + Time.now.utc.iso8601 + "\n";
-        print "------\n";
+        print "------\n"
+        print "Ingest batch file started at " + Time.now.utc.iso8601 + "\n"
+        emailbody = "Ingest batch file started at " + Time.now.utc.iso8601 + "\n"
+        print "------\n"
         data_dir = File.dirname data_file
         unless File.exists?(data_dir)
           print "ERROR: Can't find the data directory\n"
+          emailbody = emailbody + "ERROR: Can't find the data directory\n"
           exit
         end
         owner = User.find_by_user_key(owner_username)
         if owner.nil?
           print "ERROR: User to run ingest not found\n"
+          emailbody = emailbody + "ERROR: User to run ingest not found\n"
           exit
         end
 
@@ -39,6 +42,7 @@ module Cbrc
           image_path = "#{data_dir}/#{image_filename}"
           if File.file?(image_path)
             print "Image found for #{cat_num}.\n"
+            emailbody = emailbody + "Image found for #{cat_num}.\n"
           else
             print "WARNING: Could not import image for #{cat_num}. Not importing this object\n"
             next
@@ -83,6 +87,7 @@ module Cbrc
 
           else
             print "Existing record found for #{cat_num}.\n"
+            emailbody = emailbody + "Existing record found for #{cat_num}.\n"
             gf = Work.find(gfs.first['id'])
             gf.update(multivalue_row.to_h)
 
@@ -105,30 +110,33 @@ module Cbrc
 
             if gf.save
               print "Updated #{cat_num}.\n"
+              emailbody = emailbody + "Existing record found for #{cat_num}.\n"
             else
               print "WARNING: Update failed: #{gf.errors.full_messages}\n"
+              emailbody = emailbody + "WARNING: Update failed: #{gf.errors.full_messages}\n"
             end
             if deleteafteringest == "YES"
               File.delete(image_path)
             end
           end
         end
-        print "------\n";
-        print "Ingest complete\n";
-        print "------\n";
+        print "------\n"
+        print "Ingest complete\n"
+        emailbody = emailbody + "Ingest complete\n"
+        print "------\n"
 
         #send an email
         msg = <<END_OF_MESSAGE
-From: jhallida@indiana.edu <James Halliday>
+From: James Halliday <jhallida>
 To: <jhallida@indiana.edu>
 Subject: Imago Ingest Complete
 
-        HERE IS THE MESSAGE
+        #{emailbody}
 
 END_OF_MESSAGE
 
         Net::SMTP.start("127.0.0.1") do |smtp|
-          smtp.send_message msg, "jhallida@indiana.edu", "jhallida@indiana.edu"
+          smtp.send_message msg, "jhallida@indiana.edu", "to"
         end
 
       end
