@@ -110,7 +110,7 @@ module Cbrc
 
             if gf.save
               print "Updated #{cat_num}.\n"
-              emailbody = emailbody + "Existing record found for #{cat_num}.\n"
+              emailbody = emailbody + "Updated #{cat_num}.\n"
             else
               print "WARNING: Update failed: #{gf.errors.full_messages}\n"
               emailbody = emailbody + "WARNING: Update failed: #{gf.errors.full_messages}\n"
@@ -127,8 +127,8 @@ module Cbrc
 
         #send an email
         msg = <<END_OF_MESSAGE
-From: James Halliday <jhallida>
-To: <jhallida@indiana.edu>
+From: FROMEMAIL
+To: TOEMAIL
 Subject: Imago Ingest Complete
 
         #{emailbody}
@@ -136,7 +136,7 @@ Subject: Imago Ingest Complete
 END_OF_MESSAGE
 
         Net::SMTP.start("127.0.0.1") do |smtp|
-          smtp.send_message msg, "jhallida@indiana.edu", "to"
+          smtp.send_message msg, "fromemail", "toemail"
         end
 
       end
