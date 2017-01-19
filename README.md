@@ -17,6 +17,6 @@ u = User.create!({:email => "example@example.com", :password => "11111111", :pas
 To run the batch image ingest rake task:
 
 ```
-rake cbrc:import:import_herbs[samples/samplefiles.csv,example@example.com]
+rake cbrc:import:import_herbs[samples/samplefiles.csv,example@example.com,"NO"]
 ```
 

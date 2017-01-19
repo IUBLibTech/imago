@@ -2,17 +2,21 @@
 # Ruby process for batch import, called by rake tasks
 #
 # This is used to import a batch of files from the Herbarium, along with an associated CSV file
-# Task is run with 'rake cbrc:import:import_herbs[filename.csv,email@indiana.edu]
+# Task is run with 'rake cbrc:import:import_herbs[filename.csv,email@example.com,"NO"]
 #
+
+require 'net/smtp'
 
 module Cbrc
 
   module Ingest
 
     module Tasks
+
       # rake cbrc:import:import_herbs[{CSV path},{user email}]
       # Images are in same directory as CSV file, filename format "{catalog_number}-full.jpg"
-      def Tasks.import_herbs(data_file, owner_username)
+      # Files will be deleted after ingest only if deleteafteringest is set to "YES"
+      def Tasks.import_herbs(data_file, owner_username, deleteafteringest)
         print "------\n";
         print "Ingest batch file started at " + Time.now.utc.iso8601 + "\n";
         print "------\n";
@@ -73,6 +77,9 @@ module Cbrc
             file_set_actor = CurationConcerns::Actors::FileSetActor.new(file_set, owner)
             file_set_actor.create_metadata(gf, visibility: gf.visibility)
             file_set_actor.create_content(File.open(image_path))
+            if deleteafteringest == "YES"
+              File.delete(image_path)
+            end
 
           else
             print "Existing record found for #{cat_num}.\n"
@@ -101,11 +108,29 @@ module Cbrc
             else
               print "WARNING: Update failed: #{gf.errors.full_messages}\n"
             end
+            if deleteafteringest == "YES"
+              File.delete(image_path)
+            end
           end
         end
         print "------\n";
         print "Ingest complete\n";
         print "------\n";
+
+        #send an email
+        msg = <<END_OF_MESSAGE
+From: jhallida@indiana.edu <James Halliday>
+To: <jhallida@indiana.edu>
+Subject: Imago Ingest Complete
+
+        HERE IS THE MESSAGE
+
+END_OF_MESSAGE
+
+        Net::SMTP.start("127.0.0.1") do |smtp|
+          smtp.send_message msg, "jhallida@indiana.edu", "jhallida@indiana.edu"
+        end
+
       end
     end
   end

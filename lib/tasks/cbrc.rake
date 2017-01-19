@@ -5,8 +5,8 @@ namespace :cbrc do
   require "#{Rails.root}/lib/tasks/fix_thumbnails"
   namespace :import do
     desc "Import Herbarium records from CSV."
-    task :import_herbs, [:datafile, :owner] => :environment do |task, args|
-      Cbrc::Ingest::Tasks::import_herbs(args.datafile, args.owner)
+    task :import_herbs, [:datafile, :owner, :deleteafteringest] => :environment do |task, args|
+      Cbrc::Ingest::Tasks::import_herbs(args.datafile, args.owner, args.deleteafteringest)
     end
   end
   namespace :delete do
