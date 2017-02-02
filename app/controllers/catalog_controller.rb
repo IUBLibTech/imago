@@ -51,7 +51,9 @@ class CatalogController < ApplicationController
 
     # solr fields that will be treated as facets by the blacklight application
     #   The ordering of the field names is the order of the display
-    
+
+
+    config.add_facet_field solr_name("collection_code", :facetable), label: "Collection", limit: 5
     config.add_facet_field solr_name("keyword", :facetable), label: "Keyword", limit: 5
     # config.add_facet_field solr_name("subject", :facetable), label: "Subject", limit: 5
     # config.add_facet_field solr_name("language", :facetable), label: "Language", limit: 5
