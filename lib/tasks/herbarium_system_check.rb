@@ -38,7 +38,7 @@ module Cbrc
         x = 0
 	ids = []
         Work.search_in_batches("#{Solrizer.solr_name('depositor', :symbol)}:\"herbaria@indiana.edu\"", fl: "catalog_number_tesim") do |group|
-          idsAll.concat group.map { |doc| doc["catalog_number_tesim"] }
+          idsAll.concat group.map { |doc| doc["catalog_number_tesim"].first }
 	  x = x + 1000
 	  puts "Read #{x}"
         end
