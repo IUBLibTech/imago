@@ -35,18 +35,12 @@ module Cbrc
 
         #scan through images
         puts "STARING IMAGO IMAGE SCAN"
-        x = 0;
-        ids = []
-        CurationConcerns::WorkRelation.new.search_in_batches("#{Solrizer.solr_name('depositor', :symbol)}:\"herbaria@indiana.edu\"", fl: "id") do |group|
-          ids.concat group.map { |doc| doc["id"] }
-        end
-
-        ids.each do |id|
-          x = x + 1
-          if x % 300 == 0
-            puts "Read #{x} objects"
-          end
-          idsAll.push(Work.find(id).catalog_number[0].to_s)
+        x = 0
+	ids = []
+        Work.search_in_batches("#{Solrizer.solr_name('depositor', :symbol)}:\"herbaria@indiana.edu\"", fl: "catalog_number_tesim") do |group|
+          idsAll.concat group.map { |doc| doc["catalog_number_tesim"] }
+	  x = x + 1000
+	  puts "Read #{x}"
         end
 
         #sort array for output
