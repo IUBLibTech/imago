@@ -11,8 +11,6 @@ module Cbrc
 
         #initialize arrays
         idsAll = Array[]
-        idsWrongAlignment = Array[]
-        idsTooSmall = Array[]
         sdaAll = Array[]
         etrAll = Array[]
         symbiotaAll = Array[]
@@ -38,30 +36,22 @@ module Cbrc
         #scan through images
         puts "STARING IMAGO IMAGE SCAN"
         x = 0;
-        Work.find_each("#{Solrizer.solr_name('depositor', :symbol)}:\"herbaria@indiana.edu\"", fl: "id") do |id|
-          x = x + 1
-          if x % 100 == 0
-            puts "Read #{x} objects"
-          end
-          gfs = (Work.search_with_conditions catalog_number_sim: id.catalog_number).first['hasRelatedImage_ssim'].first
-          thefile = FileSet.find(gfs)
-          height = thefile.height.first.to_i
-          width = thefile.width.first.to_i
-          #write to appropriate files based on imago status
-          if height < width
-            idsWrongAlignment.push(id.catalog_number.first.to_s)
-          end
-          if (height < 2000) || (width < 2000)
-            idsTooSmall.push(id.catalog_number.first.to_s)
-          end
-          idsAll.push(id.catalog_number.first.to_s)
+        ids = []
+        CurationConcerns::WorkRelation.new.search_in_batches("#{Solrizer.solr_name('depositor', :symbol)}:\"herbaria@indiana.edu\"", fl: "id") do |group|
+          ids.concat group.map { |doc| doc["id"] }
         end
 
-        #sort arrays for output
+        ids.each do |id|
+          x = x + 1
+          if x % 300 == 0
+            puts "Read #{x} objects"
+          end
+          idsAll.push(Work.find(id).catalog_number[0].to_s)
+        end
+
+        #sort array for output
         puts "SORTING ARRAYS..."
         idsAll.sort!
-        idsWrongAlignment.sort!
-        idsTooSmall.sort!
 
         #create difference arrays
         puts "CREATING DIFF ARRAYS..."
@@ -78,12 +68,6 @@ module Cbrc
         if Rails.root.join('public', 'imago_all.txt').exist?
           File.delete(Rails.root.join('public', 'imago_all.txt'))
         end
-        if Rails.root.join('public', 'imago_sideways.txt').exist?
-          File.delete(Rails.root.join('public', 'imago_sideways.txt'))
-        end
-        if Rails.root.join('public', 'imago_toosmall.txt').exist?
-          File.delete(Rails.root.join('public', 'imago_toosmall.txt'))
-        end
         if Rails.root.join('public', 'symbiota_not_sda.txt').exist?
           File.delete(Rails.root.join('public', 'symbiota_not_sda.txt'))
         end
@@ -93,8 +77,6 @@ module Cbrc
         #create new system check files and open them for writing
         check_html = File.new(Rails.root.join('public', 'herbariumcheck.html'), 'w')
         imago_all = File.new(Rails.root.join('public', 'imago_all.txt'), 'w')
-        imago_sideways = File.new(Rails.root.join('public', 'imago_sideways.txt'), 'w')
-        imago_toosmall = File.new(Rails.root.join('public', 'imago_toosmall.txt'), 'w')
         file_imago_not_sda = File.new(Rails.root.join('public', 'imago_not_sda.txt'), 'w')
         file_sda_not_imago = File.new(Rails.root.join('public', 'sda_not_imago.txt'), 'w')
         file_symbiota_not_sda = File.new(Rails.root.join('public', 'symbiota_not_sda.txt'), 'w')
@@ -108,8 +90,6 @@ module Cbrc
         check_html.puts("<p>Symbiota list was generated on: #{File.mtime(Rails.root.join('public', 'symbiota_all.txt'))}</p>")
         check_html.puts("<p>ETR list was generated on: #{File.mtime(Rails.root.join('public', 'etr_all.txt'))}</p>")
         check_html.puts("<p><a href='imago_all.txt'>List all items in Imago</a> Total: #{idsAll.size}</p>")
-        check_html.puts("<p><a href='imago_sideways.txt'>List all items in Imago that are sideways</a> Total: #{idsWrongAlignment.size}</p>")
-        check_html.puts("<p><a href='imago_toosmall.txt'>List all items in Imago that are too small</a> Total: #{idsTooSmall.size}</p>")
         check_html.puts("<p><a href='sda_all.txt'>List all items in SDA</a> Total: #{sdaAll.size}</p>")
         check_html.puts("<p><a href='sda_not_imago.txt'>List all items in SDA not in Imago (excluding ETR)</a> Total: #{sda_not_imago.size}</p>")
         check_html.puts("<p><a href='imago_not_sda.txt'>List all items in Imago not SDA</a> Total: #{imago_not_sda.size}</p>")
@@ -124,18 +104,6 @@ module Cbrc
           imago_all.puts(id)
         end
         imago_all.close
-
-        #write list of sideways files
-        idsWrongAlignment.each do |id|
-          imago_sideways.puts(id)
-        end
-        imago_sideways.close
-
-        #write list of small files
-        idsTooSmall.each do |id|
-          imago_toosmall.puts(id)
-        end
-        imago_toosmall.close
 
         #files in Imago but not SDA
         imago_not_sda.each do |id|
