@@ -2,25 +2,17 @@
 # Ruby process for batch deletion, called by rake tasks
 #
 # This is used to delete a batch of records. Needed because we had to delete records for endagered species
-# Task is run with 'rake cbrc:delete:delete_herbs[filename.csv]
+# Task is run with 'rake cbrc:herbarium_batch_delete:herbarium_batch_delete[filename.csv]
 # filename.csv is a list of files to delete, one per line, with 'catalog_number' as a header for the CSV file
 #
 
 module Cbrc
 
-  module Delete
+  module HerbariumBatchDelete
 
     module Tasks
 
-      def Tasks.delete_herbs(data_file)
-
-        #how to do this on rails console
-        #Work.find_each("#{Solrizer.solr_name('depositor', :symbol)}:\"email@indiana.edu\"", fl: "id") do |work|
-        #  if (work.catalog_number[0] == "IND-0001045")
-        #    work.destroy
-        #  end
-        #end
-
+      def Tasks.herbarium_batch_delete(data_file)
         print "------\n";
         print "Delete batch file started at " + Time.now.utc.iso8601 + "\n";
         print "------\n";

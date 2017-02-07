@@ -1,22 +1,21 @@
 #
-# Ruby process for batch import, called by rake tasks
+# Ruby process for batch import to Herbarium collection, called by rake tasks
 #
-# This is used to import a batch of files from the Herbarium, along with an associated CSV file
-# Task is run with 'rake cbrc:import:import_herbs[filename.csv,email@example.com,"NO"]
+# This is used to import a batch for the Herbarium, using an associated CSV file
+# Task is run with 'rake cbrc:herbarium_batch_import:herbarium_batch_import[filename.csv,email@example.com,"NO"]
+# Images are in same directory as CSV file, filename format "{catalog_number}-full.jpg"
+# Files will be deleted after ingest only if deleteafteringest is set to "YES"
 #
 
 require 'net/smtp'
 
 module Cbrc
 
-  module Ingest
+  module HerbariumBatchImport
 
     module Tasks
 
-      # rake cbrc:import:import_herbs[{CSV path},{user email}]
-      # Images are in same directory as CSV file, filename format "{catalog_number}-full.jpg"
-      # Files will be deleted after ingest only if deleteafteringest is set to "YES"
-      def Tasks.import_herbs(data_file, owner_username, deleteafteringest)
+      def Tasks.herbarium_batch_import(data_file, owner_username, deleteafteringest)
         print "------\n"
         print "Ingest batch file started at " + Time.now.utc.iso8601 + "\n"
         emailbody = "Ingest batch file started at " + Time.now.utc.iso8601 + "\n"

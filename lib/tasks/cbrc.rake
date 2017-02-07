@@ -1,30 +1,33 @@
 namespace :cbrc do
-  require "#{Rails.root}/lib/tasks/batch_import"
-  require "#{Rails.root}/lib/tasks/batch_delete"
+
+  require "#{Rails.root}/lib/tasks/herbarium_batch_import"
+  require "#{Rails.root}/lib/tasks/herbarium_batch_delete"
   require "#{Rails.root}/lib/tasks/herbarium_system_check"
-  require "#{Rails.root}/lib/tasks/fix_thumbnails"
-  namespace :import do
+  require "#{Rails.root}/lib/tasks/herbarium_fix_thumbnails"
+
+  namespace :herbarium_batch_import do
     desc "Import Herbarium records from CSV."
-    task :import_herbs, [:datafile, :owner, :deleteafteringest] => :environment do |task, args|
-      Cbrc::Ingest::Tasks::import_herbs(args.datafile, args.owner, args.deleteafteringest)
+    task :herbarium_batch_import, [:datafile, :owner, :deleteafteringest] => :environment do |task, args|
+      Cbrc::HerbariumBatchImport::Tasks::herbarium_batch_import(args.datafile, args.owner, args.deleteafteringest)
     end
   end
-  namespace :delete do
+  namespace :herbarium_batch_delete do
     desc "Delete Herbarium records from CSV."
-    task :delete_herbs, [:datafile] => :environment do |task, args|
-      Cbrc::Delete::Tasks::delete_herbs(args.datafile)
+    task :herbarium_batch_delete, [:datafile] => :environment do |task, args|
+      Cbrc::HerbariumBatchDelete::Tasks::herbarium_batch_delete(args.datafile)
     end
   end
   namespace :system_check do
-    desc "Run system maintenance tasks."
+    desc "Run system maintenance tasks for herbarium."
     task :herbarium_system_check, [:datafile] => :environment do |task, args|
       Cbrc::SystemCheck::Tasks::herbarium_system_check
     end
   end
-  namespace :fix_thumbnails do
-    desc "Fix missing thumbnails for a range of records."
-    task :fix_thumbnails, [:startItem, :endItem] => :environment do |task, args|
-      Cbrc::FixThumbnails::Tasks::fix_thumbnails(args.startItem, args.endItem)
+  namespace :herbarium_fix_thumbnails do
+    desc "Fix missing thumbnails for a range of records in the Herbarium collection."
+    task :herbarium_fix_thumbnails, [:startItem, :endItem] => :environment do |task, args|
+      Cbrc::HerbariumFixThumbnails::Tasks::herbarium_fix_thumbnails(args.startItem, args.endItem)
     end
   end
+
 end

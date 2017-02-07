@@ -1,18 +1,20 @@
 #
 # Ruby process to rebuild thumbnails within a specific nunmerical range
 #
+# Works with Herbarium only
 # Created because some thumbnails were accidentally deleted
-# Task is run with 'rake cbrc:fix_thumbnails:fix_thumbnails[start,end]
+# Task is run with 'rake cbrc:herbarium_fix_thumbnails:herbarium_fix_thumbnails[start,end]
 # start and end are numerical ranges for images catalog numbers (1002,1014) for example
+# currently doesn't gracefully handle when files aren't present for a given catalog number
 #
 
 module Cbrc
 
-  module FixThumbnails
+  module HerbariumFixThumbnails
 
     module Tasks
 
-      def Tasks.fix_thumbnails(startItem, endItem)
+      def Tasks.herbarium_fix_thumbnails(startItem, endItem)
         x = startItem.to_i
         y = endItem.to_i
         while (x <= y)
