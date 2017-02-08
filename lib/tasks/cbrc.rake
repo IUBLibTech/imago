@@ -1,6 +1,7 @@
 namespace :cbrc do
 
   require "#{Rails.root}/lib/tasks/herbarium_batch_import"
+  require "#{Rails.root}/lib/tasks/paleo_batch_import"
   require "#{Rails.root}/lib/tasks/herbarium_batch_delete"
   require "#{Rails.root}/lib/tasks/herbarium_system_check"
   require "#{Rails.root}/lib/tasks/herbarium_fix_thumbnails"
@@ -9,6 +10,12 @@ namespace :cbrc do
     desc "Import Herbarium records from CSV."
     task :herbarium_batch_import, [:datafile, :owner, :deleteafteringest] => :environment do |task, args|
       Cbrc::HerbariumBatchImport::Tasks::herbarium_batch_import(args.datafile, args.owner, args.deleteafteringest)
+    end
+  end
+  namespace :paleo_batch_import do
+    desc "Import Paleo records from CSV."
+    task :paleo_batch_import, [:datafile, :owner, :deleteafteringest] => :environment do |task, args|
+      Cbrc::PaleoBatchImport::Tasks::paleo_batch_import(args.datafile, args.owner, args.deleteafteringest)
     end
   end
   namespace :herbarium_batch_delete do
