@@ -43,12 +43,13 @@ module Cbrc
           while (cat_num.length < 8)
             cat_num.prepend("0")
           end
+          cat_num.prepend("VAD8336-")
           if (allnums.include?(cat_num))
             next
           end
           allnums.add(cat_num)
           #search for matching files in the directory
-          thefiles = Dir.glob("#{data_dir}/VAD8336-#{cat_num}*-full.jpg")
+          thefiles = Dir.glob("#{data_dir}/#{cat_num}*-full.jpg")
           thefiles.sort!
           if (thefiles.empty?)
             #nothing to do here
@@ -56,42 +57,49 @@ module Cbrc
           end
           #thefiles array of files is now ready for ingesting
           #next, prep metadata
-          multivalue_row = row.to_hash.map do |k,v|
+          multivalue_row = []
+          row.to_hash.map do |k,v|
             v ||= ''
-            #TODO: INSERT METADATA FIELD FIXES AND DELETIONS
+            #TODO: INSERT CORRECT METADATA FIELD FIXES AND DELETIONS
+            if k == "catalogNumber"
+              k = 'catalog_number'
+            end
+            if ((k != "catalog_number") && (k != "kingdom"))
+              next
+            end
             if Work.properties[k].try :multiple?
-              [k, [v]]
+              multivalue_row.push([k, [v]])
             else
-              [k, v]
+              multivalue_row.push([k, v])
             end
           end
           puts "Ingesting #{cat_num}"
           the_work = Work.search_with_conditions catalog_number_sim: cat_num
           if the_work.size == 0
-            #TODO IMPLEMENT THIS CORRECTLY
-            next
             gf = Work.create!(multivalue_row.to_h) do |obj|
               #add a few more boilerplate metadata items
               obj.title = [cat_num]
               obj.depositor = owner.email
               obj.edit_users = [owner.email]
               obj.rights = ['http://creativecommons.org/licenses/by-nc/3.0/us/']
-              obj.collection_code = ['herbarium']
-              obj.identifier = ["http://purl.dlib.indiana.edu/iudl/herbarium/#{cat_num}"]
+              obj.collection_code = ['paleontology']
+              obj.identifier = ["http://purl.dlib.indiana.edu/iudl/paleontology/#{cat_num}"]
               obj.set_read_groups( ["public"], [])
             end
-
-            file_set = ::FileSet.new
-            file_set_actor = CurationConcerns::Actors::FileSetActor.new(file_set, owner)
-            file_set_actor.create_metadata(gf, visibility: gf.visibility)
-            file_set_actor.create_content(File.open(image_path))
-            if deleteafteringest == "YES"
-              File.delete(image_path)
+            #add all files that we found
+            thefiles.each do |singlefile|
+              file_set = ::FileSet.new
+              file_set_actor = CurationConcerns::Actors::FileSetActor.new(file_set, owner)
+              file_set_actor.create_metadata(gf, visibility: gf.visibility)
+              file_set_actor.create_content(File.open(singlefile))
+              if deleteafteringest == "YES"
+                File.delete(image_path)
+              end
             end
           else
             #TODO IMPLEMENT THIS CORRECTLY
+            puts "UPDATING PALEO COLLECTION THROUGH BATCH NOT YET SUPPORTED"
             next
-            puts "UPDATING PALEO THROUGH BATCH NOT YET SUPPORTED"
             print "Existing record found for #{cat_num}.\n"
             emailbody = emailbody + "Existing record found for #{cat_num}.\n"
             gf = Work.find(gfs.first['id'])
