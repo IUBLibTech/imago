@@ -64,7 +64,32 @@ module Cbrc
             if k == "catalogNumber"
               k = 'catalog_number'
             end
-            if ((k != "catalog_number") && (k != "kingdom"))
+            if k == "basisOfRecord"
+              k = "basis_of_record"
+            end
+            if k == "class"
+              k = "dwcclass"
+            end
+            if k == "specificEpithet"
+              k = "specific_epithet"
+            end
+            if k == "scientificName"
+              k = "scientific_name"
+            end
+            if k == "scientificNameAuthorship"
+              k = "scientific_name_authorship"
+            end
+            if k == "stateProvince"
+              k = "state_province"
+            end
+            if k == "otherCatalogNumbers"
+              k = "other_catalog_numbers"
+            end
+            if (k != "catalog_number") && (k != "kingdom") && (k != "basis_of_record") && (k != "phylum") \
+                    && (k != "order") && (k != "family") && (k != "dwcclass") && (k != "genus") && (k != "specific_epithet") \
+                    && (k != "scientific_name") && (k != "scientific_name_authorship") \
+                    && (k != "country") && (k != "state_province") && (k != "county") && (k != "locality") \
+                    && (k != "other_catalog_numbers")
               next
             end
             if Work.properties[k].try :multiple?
@@ -88,6 +113,7 @@ module Cbrc
             end
             #add all files that we found
             thefiles.each do |singlefile|
+              puts "Adding image #{singlefile}"
               file_set = ::FileSet.new
               file_set_actor = CurationConcerns::Actors::FileSetActor.new(file_set, owner)
               file_set_actor.create_metadata(gf, visibility: gf.visibility)
