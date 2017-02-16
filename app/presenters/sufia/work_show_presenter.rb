@@ -9,6 +9,10 @@ module Sufia
              :kingdom, :phylum, :dwcclass, :order, :family, :genus, :specific_epithet,
              :infraspecific_epithet, :type_status, :basis_of_record, to: :solr_document
 
+    # new for paleo
+    delegate :bed, :dwcmember, :formation, :group, :latest_age_or_highest_stage, :earliest_age_or_lowest_stage, :latest_period_or_highest_system,
+             :earliest_period_or_lowest_system, to: :solr_document
+
     def editor?
       current_ability.can?(:edit, solr_document)
     end

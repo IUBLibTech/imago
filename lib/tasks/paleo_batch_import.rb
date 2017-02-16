@@ -60,7 +60,6 @@ module Cbrc
           multivalue_row = []
           row.to_hash.map do |k,v|
             v ||= ''
-            #TODO: INSERT CORRECT METADATA FIELD FIXES AND DELETIONS
             if k == "catalogNumber"
               k = 'catalog_number'
             end
@@ -85,11 +84,33 @@ module Cbrc
             if k == "otherCatalogNumbers"
               k = "other_catalog_numbers"
             end
+            if k == "member"
+              k = "dwcmember"
+            end
+            if k == "latestAgeOrHighestStage"
+              k = "latest_age_or_highest_stage"
+            end
+            if k == "earliestAgeOrLowestStage"
+              k = "earliest_age_or_lowest_stage"
+            end
+            if k == "latestPeriodOrHighestSystem"
+              k = "latest_period_or_highest_system"
+            end
+            if k == "earliestPeriodOrLowestSystem"
+              k = "earliest_period_or_lowest_system"
+            end
+            if k == "typeStatus"
+              k = "type_status"
+            end
+
             if (k != "catalog_number") && (k != "kingdom") && (k != "basis_of_record") && (k != "phylum") \
                     && (k != "order") && (k != "family") && (k != "dwcclass") && (k != "genus") && (k != "specific_epithet") \
                     && (k != "scientific_name") && (k != "scientific_name_authorship") \
                     && (k != "country") && (k != "state_province") && (k != "county") && (k != "locality") \
-                    && (k != "other_catalog_numbers")
+                    && (k != "other_catalog_numbers") \
+                    && (k != "bed") && (k != "dwcmember") && (k != "formation") && (k != "group") \
+                    && (k != "latest_age_or_highest_stage") && (k != "earliest_age_or_lowest_stage") \
+                    && (k != "latest_period_or_highest_system") && (k != "earliest_period_or_lowest_system") && (k != "type_status")
               next
             end
             if Work.properties[k].try :multiple?

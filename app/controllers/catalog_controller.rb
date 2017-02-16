@@ -136,6 +136,16 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("type_status", :stored_searchable), label: "Type Status"
     config.add_show_field solr_name("basis_of_record", :stored_searchable), label: "Basis Of Record"
 
+    #new for paleo
+    config.add_show_field solr_name("bed", :stored_searchable), label: "Bed"
+    config.add_show_field solr_name("dwcmember", :stored_searchable), label: "Member"
+    config.add_show_field solr_name("formation", :stored_searchable), label: "Formation"
+    config.add_show_field solr_name("group", :stored_searchable), label: "Group"
+    config.add_show_field solr_name("latest_age_or_highest_stage", :stored_searchable), label: "Latest Age Or Highest Stage"
+    config.add_show_field solr_name("earliest_age_or_lowest_stage", :stored_searchable), label: "Earliest Age Or Lowest Stage"
+    config.add_show_field solr_name("latest_period_or_highest_system", :stored_searchable), label: "Latest Period Or Highest System"
+    config.add_show_field solr_name("earliest_period_or_lowest_system", :stored_searchable), label: "Earliest Period Or Lowest System"
+
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields
     #

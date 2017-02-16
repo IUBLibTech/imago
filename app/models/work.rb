@@ -76,6 +76,32 @@ class Work < ActiveFedora::Base
     index.as :stored_searchable, :facetable
   end
 
+  #new for paleo
+  property :bed, predicate: ::RDF::Vocab::DWC.bed do |index|
+    index.as :stored_searchable, :facetable
+  end
+  property :dwcmember, predicate: ::RDF::Vocab::DWC.member do |index|
+    index.as :stored_searchable, :facetable
+  end
+  property :formation, predicate: ::RDF::Vocab::DWC.formation do |index|
+    index.as :stored_searchable, :facetable
+  end
+  property :group, predicate: ::RDF::Vocab::DWC.group do |index|
+    index.as :stored_searchable, :facetable
+  end
+  property :latest_age_or_highest_stage, predicate: ::RDF::Vocab::DWC.latestAgeOrHighestStage do |index|
+    index.as :stored_searchable, :facetable
+  end
+  property :earliest_age_or_lowest_stage, predicate: ::RDF::Vocab::DWC.earliestAgeOrLowestStage do |index|
+    index.as :stored_searchable, :facetable
+  end
+  property :latest_period_or_highest_system, predicate: ::RDF::Vocab::DWC.latestPeriodOrHighestSystem do |index|
+    index.as :stored_searchable, :facetable
+  end
+  property :earliest_period_or_lowest_system, predicate: ::RDF::Vocab::DWC.earliestPeriodOrLowestSystem do |index|
+    index.as :stored_searchable, :facetable
+  end
+
 
   # Change this to restrict which works can be added as a child.
   # self.valid_child_concerns = []

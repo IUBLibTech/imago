@@ -29,6 +29,16 @@ module CurationConcerns
     self.terms += [:type_status]
     self.terms += [:basis_of_record]
 
+    #new for paleo
+    self.terms += [:bed]
+    self.terms += [:dwcmember]
+    self.terms += [:formation]
+    self.terms += [:group]
+    self.terms += [:latest_age_or_highest_stage]
+    self.terms += [:earliest_age_or_lowest_stage]
+    self.terms += [:latest_period_or_highest_system]
+    self.terms += [:earliest_period_or_lowest_system]
+
     self.required_fields = [:title, :rights]
 
   end

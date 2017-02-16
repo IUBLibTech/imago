@@ -78,6 +78,32 @@ class SolrDocument
     self[Solrizer.solr_name('basis_of_record')]
   end
 
+  #add paleo
+  def bed
+    self[Solrizer.solr_name('bed')]
+  end
+  def dwcmember
+    self[Solrizer.solr_name('dwcmember')]
+  end
+  def formation
+    self[Solrizer.solr_name('formation')]
+  end
+  def group
+    self[Solrizer.solr_name('group')]
+  end
+  def latest_age_or_highest_stage
+    self[Solrizer.solr_name('latest_age_or_highest_stage')]
+  end
+  def earliest_age_or_lowest_stage
+    self[Solrizer.solr_name('earliest_age_or_lowest_stage')]
+  end
+  def latest_period_or_highest_system
+    self[Solrizer.solr_name('latest_period_or_highest_system')]
+  end
+  def earliest_period_or_lowest_system
+    self[Solrizer.solr_name('earliest_period_or_lowest_system')]
+  end
+
   # self.unique_key = 'id'
 
   # Email uses the semantic field mappings below to generate the body of an email.
