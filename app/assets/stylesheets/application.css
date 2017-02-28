@@ -14,67 +14,14 @@
  *= require_self
  */
 
-/* overwrite background image on home page */
-#home_header  {
-    background-image: none;
+/* overwrite background image on home page! */
+
+#masthead, #masthead .container-fluid, #masthead .container-fluid  .navbar-header{
+  min-width:99.95%;width:100%;margin:0;padding:0;
+background: #fff; border: none;
 }
 
-/* overwrite footer */
-#footer {
-    clear: both;
-    color: black;
-    margin-top: 2em;
-    padding: 1em;
-    min-height: 4em;
-    background-image: none;
-    background: none;
-}
 
-/* overwrite header colors */
-#masthead {
-    background: #7D110C; /* Old browsers */
-    background-image: -webkit-gradient(
-            linear,
-            left top,
-            left bottom,
-            color-stop(0, #7D110C),
-            color-stop(1, #7D110C)
-    );
-    background-image: -o-linear-gradient(bottom, #7D110C 0%, #7D110C 100%);
-    background-image: -moz-linear-gradient(bottom, #7D110C 0%, #7D110C 100%);
-    background-image: -webkit-linear-gradient(bottom, #7D110C 0%, #7D110C 100%);
-    background-image: -ms-linear-gradient(bottom, #7D110C 0%, #7D110C 100%);
-    background-image: linear-gradient(to bottom, #7D110C 0%, #7D110C 100%);
-    min-height: 4em;
+#masthead .container-fluid.bg-hdr h1{
+margin-left:15px;
 }
-#masthead_controls {
-    background-color: #E1D8B7;
-    padding-top: 20px;
-}
-#masthead_controls .navbar {
-    background-color: #E1D8B7;
-}
-#masthead_controls .navbar a:link {
-    color: black;
-    background-color: #E1D8B7;
-}
-#masthead_controls .navbar a:visited {
-    color: black;
-    background-color: #E1D8B7;
-}
-#masthead_controls .navbar a:hover {
-    color: black;
-    background-color: #E1D8B7;
-}
-#masthead_controls .navbar-default .navbar-nav > .active > a,
-#masthead_controls .navbar-default .navbar-nav > .active > a:hover,
-#masthead_controls .navbar-default .navbar-nav > .active > a:focus {
-    background-color: #7D110C;
-    color: white;
-}
-
-/* overwrite button colors */
-.btn {
-    background-color: #AEA79F
-}
-
