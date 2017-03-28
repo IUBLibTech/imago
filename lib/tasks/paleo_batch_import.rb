@@ -40,16 +40,17 @@ module Cbrc
         # go through and ingest each line of the file
         CSV.foreach(data_file, headers:true) do |row|
           cat_num = row['catalogNumber'].to_s
-          while (cat_num.length < 8)
-            cat_num.prepend("0")
-          end
-          cat_num.prepend("VAD8336-")
+          #files are named a bit differently than cat num
+          cat_num_file = cat_num.clone
+          cat_num_file.slice!(0..3)
+          cat_num_file.prepend("VAD8336")
+
           if (allnums.include?(cat_num))
             next
           end
           allnums.add(cat_num)
           #search for matching files in the directory
-          thefiles = Dir.glob("#{data_dir}/#{cat_num}*-full.jpg")
+          thefiles = Dir.glob("#{data_dir}/#{cat_num_file}*-full.jpg")
           thefiles.sort!
           if (thefiles.empty?)
             #nothing to do here
@@ -124,12 +125,12 @@ module Cbrc
           if the_work.size == 0
             gf = Work.create!(multivalue_row.to_h) do |obj|
               #add a few more boilerplate metadata items
-              obj.title = [cat_num]
+              obj.title = [cat_num_file]
               obj.depositor = owner.email
               obj.edit_users = [owner.email]
               obj.rights = ['http://creativecommons.org/licenses/by-nc/3.0/us/']
               obj.collection_code = ['paleontology']
-              obj.identifier = ["http://purl.dlib.indiana.edu/iudl/paleontology/#{cat_num}"]
+              obj.identifier = ["http://purl.dlib.indiana.edu/iudl/paleontology/#{cat_num_file}"]
               obj.set_read_groups( ["public"], [])
             end
             #add all files that we found
