@@ -125,7 +125,7 @@ module Cbrc
           if the_work.size == 0
             gf = Work.create!(multivalue_row.to_h) do |obj|
               #add a few more boilerplate metadata items
-              obj.title = [cat_num_file]
+              obj.title = [cat_num]
               obj.depositor = owner.email
               obj.edit_users = [owner.email]
               obj.rights = ['http://creativecommons.org/licenses/by-nc/3.0/us/']
