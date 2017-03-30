@@ -7,28 +7,71 @@ class PurlController < ApplicationController
 
   def full
     begin
-      realid = (Work.search_with_conditions catalog_number_sim: params[:id]).first['hasRelatedImage_ssim'].first
+      realid = ''
+      if params[:id].start_with?("VAD8336")
+        #paleo
+        tempid = params[:id].slice(7..20);
+        tempid = "IUPC" + tempid;
+        filesets = (Work.search_with_conditions catalog_number_sim: tempid).first['file_set_ids_ssim']
+        filesets.each do |fileset|
+          filesettitle = FileSet.find(fileset).title.first
+          if filesettitle.start_with?(params[:id])
+            realid = FileSet.find(fileset).id
+            break
+          end
+        end
+      else
+        #herbarium
+        realid = (Work.search_with_conditions catalog_number_sim: params[:id]).first['hasRelatedImage_ssim'].first
+      end
+      if (realid == '')
+        raise "Realid isn't valid"
+      end
     rescue
       render_404 and return
     end
-
     redirect_to("#{request.protocol}#{request.host_with_port}/downloads/#{realid}")
   end
 
   def thumbnail
     begin
-      realid = (Work.search_with_conditions catalog_number_sim: params[:id]).first['hasRelatedImage_ssim'].first
+      realid = ''
+      if params[:id].start_with?("VAD8336")
+        #paleo
+        tempid = params[:id].slice(7..20);
+        tempid = "IUPC" + tempid;
+        filesets = (Work.search_with_conditions catalog_number_sim: tempid).first['file_set_ids_ssim']
+        filesets.each do |fileset|
+          filesettitle = FileSet.find(fileset).title.first
+          if filesettitle.start_with?(params[:id])
+            realid = FileSet.find(fileset).id
+            break
+          end
+        end
+      else
+        #herbarium
+        realid = (Work.search_with_conditions catalog_number_sim: params[:id]).first['hasRelatedImage_ssim'].first
+      end
+      if (realid == '')
+        raise "Realid isn't valid"
+      end
     rescue
       render_404 and return
     end
-
     redirect_to("#{request.protocol}#{request.host_with_port}/downloads/#{realid}?file=thumbnail")
   end
 
   def default
     begin
-      #realid='4t64gn166'
-      realid = (Work.search_with_conditions catalog_number_sim: params[:id]).first['id']
+      if params[:id].start_with?("VAD8336")
+        #paleo
+        tempid = params[:id].slice(7..-1);
+        tempid = "IUPC" + tempid;
+        realid = (Work.search_with_conditions catalog_number_sim: tempid).first['id']
+      else
+          #herbarium
+          realid = (Work.search_with_conditions catalog_number_sim: params[:id]).first['id']
+      end
     rescue
       render_404 and return
     end
