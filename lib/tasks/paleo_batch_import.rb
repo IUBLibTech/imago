@@ -141,7 +141,7 @@ module Cbrc
               file_set_actor.create_metadata(gf, visibility: gf.visibility)
               file_set_actor.create_content(File.open(singlefile))
               if deleteafteringest == "YES"
-                File.delete(image_path)
+                File.delete(singlefile)
               end
             end
           else
