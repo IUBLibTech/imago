@@ -10,7 +10,7 @@ class PurlController < ApplicationController
       realid = ''
       if params[:id].start_with?("VAD8336")
         #paleo
-        tempid = params[:id].slice(7..20);
+        tempid = params[:id].slice(7..26);
         tempid = "IUPC" + tempid;
         filesets = (Work.search_with_conditions catalog_number_sim: tempid).first['file_set_ids_ssim']
         filesets.each do |fileset|
@@ -38,7 +38,7 @@ class PurlController < ApplicationController
       realid = ''
       if params[:id].start_with?("VAD8336")
         #paleo
-        tempid = params[:id].slice(7..20);
+        tempid = params[:id].slice(7..26);
         tempid = "IUPC" + tempid;
         filesets = (Work.search_with_conditions catalog_number_sim: tempid).first['file_set_ids_ssim']
         filesets.each do |fileset|
