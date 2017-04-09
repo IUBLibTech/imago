@@ -39,7 +39,7 @@ module Cbrc
 
         # go through and ingest each line of the file
         CSV.foreach(data_file, headers:true) do |row|
-          cat_num = row['catalogNumber'].to_s
+          cat_num = row['IMAGO:catalogNumber'].to_s
           #files are named a bit differently than cat num
           cat_num_file = cat_num.clone
           cat_num_file.slice!(0..3)
@@ -61,47 +61,80 @@ module Cbrc
           multivalue_row = []
           row.to_hash.map do |k,v|
             v ||= ''
-            if k == "catalogNumber"
+            if k == "IMAGO:catalogNumber"
               k = 'catalog_number'
             end
-            if k == "basisOfRecord"
+            if k == "dwc:basisOfRecord"
               k = "basis_of_record"
             end
-            if k == "class"
+            if k == "dwc:class"
               k = "dwcclass"
             end
-            if k == "specificEpithet"
+            if k == "dwc:specificEpithet"
               k = "specific_epithet"
             end
-            if k == "scientificName"
+            if k == "dwc:scientificName"
               k = "scientific_name"
             end
-            if k == "scientificNameAuthorship"
+            if k == "dwc:scientificNameAuthorship"
               k = "scientific_name_authorship"
             end
-            if k == "stateProvince"
+            if k == "dwc:stateProvince"
               k = "state_province"
             end
-            if k == "otherCatalogNumbers"
+            if k == "dwc:otherCatalogNumbers"
               k = "other_catalog_numbers"
             end
-            if k == "member"
+            if k == "dwc:member"
               k = "dwcmember"
             end
-            if k == "latestAgeOrHighestStage"
+            if k == "dwc:latestAgeOrHighestStage"
               k = "latest_age_or_highest_stage"
             end
-            if k == "earliestAgeOrLowestStage"
+            if k == "dwc:earliestAgeOrLowestStage"
               k = "earliest_age_or_lowest_stage"
             end
-            if k == "latestPeriodOrHighestSystem"
+            if k == "dwc:latestPeriodOrHighestSystem"
               k = "latest_period_or_highest_system"
             end
-            if k == "earliestPeriodOrLowestSystem"
+            if k == "dwc:earliestPeriodOrLowestSystem"
               k = "earliest_period_or_lowest_system"
             end
-            if k == "typeStatus"
+            if k == "dwc:typeStatus"
               k = "type_status"
+            end
+			if k == "dwc:kingdom"
+              k = "kingdom"
+            end
+			if k == "dwc:phylum"
+              k = "phylum"
+            end
+			if k == "dwc:order"
+              k = "order"
+            end
+			if k == "dwc:family"
+              k = "family"
+            end
+			if k == "dwc:genus"
+              k = "genus"
+            end
+			if k == "dwc:country"
+              k = "country"
+            end
+			if k == "dwc:county"
+              k = "county"
+            end
+			if k == "dwc:locality"
+              k = "locality"
+            end
+			if k == "dwc:bed"
+              k = "bed"
+            end
+			if k == "dwc:formation"
+              k = "formation"
+            end
+			if k == "dwc:group"
+              k = "group"
             end
 
             if (k != "catalog_number") && (k != "kingdom") && (k != "basis_of_record") && (k != "phylum") \
