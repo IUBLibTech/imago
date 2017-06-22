@@ -50,7 +50,7 @@ module Cbrc
         #create difference arrays
         puts "CREATING DIFF ARRAYS..."
         imago_not_sda = idsAll - sdaAll
-        sda_not_imago = (sdaAll - idsAll) - etrAll
+        sda_not_imago = sdaAll - idsAll
         symbiota_not_sda = symbiotaAll - sdaAll
  #       etr_and_imago = etrAll & idsAll
 
