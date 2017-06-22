@@ -85,7 +85,7 @@ module Cbrc
  #       check_html.puts("<p>ETR list was generated on: #{File.mtime(Rails.root.join('public', 'etr_all.txt'))}</p>")
         check_html.puts("<p><a href='imago_all.txt'>List all items in Imago</a> Total: #{idsAll.size}</p>")
         check_html.puts("<p><a href='sda_all.txt'>List all items in SDA</a> Total: #{sdaAll.size}</p>")
-        check_html.puts("<p><a href='sda_not_imago.txt'>List all items in SDA not in Imago (excluding ETR)</a> Total: #{sda_not_imago.size}</p>")
+        check_html.puts("<p><a href='sda_not_imago.txt'>List all items in SDA not in Imago</a> Total: #{sda_not_imago.size}</p>")
         check_html.puts("<p><a href='imago_not_sda.txt'>List all items in Imago not SDA</a> Total: #{imago_not_sda.size}</p>")
         check_html.puts("<p><a href='symbiota_all.txt'>List all items in Symbiota</a> Total: #{symbiotaAll.size}</p>")
         check_html.puts("<p><a href='symbiota_not_sda.txt'>List all items in Symbiota NOT in SDA</a> Total: #{symbiota_not_sda.size}</p>")
