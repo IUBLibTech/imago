@@ -125,10 +125,7 @@ module Cbrc
           emailbody = emailbody + "ERROR - script stopped unexpectedly\n"
           emailbody = emailbody + e.message
           emailbody = emailbody + "\n"
-          email
         ensure
-        
-          
           print "------\n"
           print "Ingest complete\n"
           emailbody = emailbody + "Ingest complete\n"
@@ -136,13 +133,13 @@ module Cbrc
 
           #send an email
           msg = <<END_OF_MESSAGE
-  From: FROMEMAIL
-  To: TOEMAIL
-  Subject: Imago Ingest Complete
+From: FROMEMAIL
+To: TOEMAIL
+Subject: Imago Ingest Complete
 
           #{emailbody}
 
-  END_OF_MESSAGE
+END_OF_MESSAGE
 
           Net::SMTP.start("127.0.0.1") do |smtp|
             smtp.send_message msg, "fromemail", "toemail"
