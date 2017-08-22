@@ -1,6 +1,10 @@
 namespace :cbrc do
 
   require "#{Rails.root}/lib/tasks/herbarium_batch_import"
+
+  require "#{Rails.root}/lib/tasks/hunt_batch_import"
+  require "#{Rails.root}/lib/tasks/iuse_batch_import"
+
   require "#{Rails.root}/lib/tasks/herbarium_start_over"
   require "#{Rails.root}/lib/tasks/paleo_batch_import"
   require "#{Rails.root}/lib/tasks/paleo_batch_update"
@@ -15,6 +19,28 @@ namespace :cbrc do
       Cbrc::HerbariumBatchImport::Tasks::herbarium_batch_import(args.datafile, args.owner, args.deleteafteringest)
     end
   end
+
+  namespace :hunt_batch_import do
+    desc "Import Herbarium records from CSV from Huntington."
+    task :hunt_batch_import, [:datafile, :owner, :deleteafteringest] => :environment do |task, args|
+      Cbrc::HuntBatchImport::Tasks::hunt_batch_import(args.datafile, args.owner, args.deleteafteringest)
+    end
+  end
+
+  namespace :iuse_batch_import do
+    desc "Import Herbarium records from CSV from IU Southeast."
+    task :iuse_batch_import, [:datafile, :owner, :deleteafteringest] => :environment do |task, args|
+      Cbrc::IuseBatchImport::Tasks::iuse_batch_import(args.datafile, args.owner, args.deleteafteringest)
+    end
+  end
+
+  namespace :herbarium_batch_import do
+    desc "Import Herbarium records from CSV."
+    task :herbarium_batch_import, [:datafile, :owner, :deleteafteringest] => :environment do |task, args|
+      Cbrc::HerbariumBatchImport::Tasks::herbarium_batch_import(args.datafile, args.owner, args.deleteafteringest)
+    end
+  end
+
   namespace :herbarium_batch_update do
     desc "Update Herbarium records from CSV."
     task :herbarium_batch_update, [:datafile, :owner] => :environment do |task, args|
