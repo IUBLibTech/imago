@@ -11,6 +11,7 @@ namespace :cbrc do
   require "#{Rails.root}/lib/tasks/herbarium_batch_update"
   require "#{Rails.root}/lib/tasks/herbarium_batch_delete"
   require "#{Rails.root}/lib/tasks/herbarium_system_check"
+  require "#{Rails.root}/lib/tasks/paleo_system_check"
   require "#{Rails.root}/lib/tasks/herbarium_fix_thumbnails"
 
   namespace :herbarium_batch_import do
@@ -75,6 +76,12 @@ namespace :cbrc do
     desc "Run system maintenance tasks for herbarium."
     task :herbarium_system_check, [:datafile] => :environment do |task, args|
       Cbrc::SystemCheck::Tasks::herbarium_system_check
+    end
+  end
+  namespace :system_check do
+    desc "Run system maintenance tasks for paleo."
+    task :paleo_system_check, [:datafile] => :environment do |task, args|
+      Cbrc::SystemCheck::Tasks::paleo_system_check
     end
   end
   namespace :herbarium_fix_thumbnails do
