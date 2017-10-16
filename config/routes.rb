@@ -38,6 +38,9 @@ Rails.application.routes.draw do
     end
   end
 
+  #add webdeposit as a static page
+  get ':action' => 'static#:action', constraints: { action: /webdeposit/ }, as: :static
+
   # modified for imago to add routes for IU PURLS
   get '/purl/thumbnail/:id' => 'purl#thumbnail'
   get '/purl/:id' => 'purl#default'
