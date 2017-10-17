@@ -60,10 +60,10 @@ module Cbrc
         end
         #create new system check files and open them for writing
         check_html = File.new(Rails.root.join('public', 'paleocheck.html'), 'w')
-        imago_all = File.new(Rails.root.join('public', 'imago_all.txt'), 'w')
-        file_imago_not_sda = File.new(Rails.root.join('public', 'imago_not_sda.txt'), 'w')
-        file_sda_not_imago = File.new(Rails.root.join('public', 'sda_not_imago.txt'), 'w')
-        file_symbiota_not_sda = File.new(Rails.root.join('public', 'symbiota_not_sda.txt'), 'w')
+        imago_all = File.new(Rails.root.join('public', 'imago_all_paleo.txt'), 'w')
+        file_imago_not_sda = File.new(Rails.root.join('public', 'imago_not_sda_paleo.txt'), 'w')
+        file_sda_not_imago = File.new(Rails.root.join('public', 'sda_not_imago_paleo.txt'), 'w')
+        file_symbiota_not_sda = File.new(Rails.root.join('public', 'symbiota_not_sda_paleo.txt'), 'w')
 
         #writing html file
         check_html.puts("<html><head><title>PALEO SYSTEM CHECK</title></head><body>")
@@ -71,12 +71,12 @@ module Cbrc
         check_html.puts("<p>Date of System Check: #{Time.now}</p>")
         check_html.puts("<p>SDA list was generated on: #{File.mtime(Rails.root.join('public', 'sda_all_paleo.txt'))}</p>")
         check_html.puts("<p>Symbiota list was generated on: #{File.mtime(Rails.root.join('public', 'symbiota_all_paleo.txt'))}</p>")
-        check_html.puts("<p><a href='imago_all.txt'>List all items in Imago</a> Total: #{idsAll.size}</p>")
-        check_html.puts("<p><a href='sda_all.txt'>List all items in SDA</a> Total: #{sdaAll.size}</p>")
-        check_html.puts("<p><a href='sda_not_imago.txt'>List all items in SDA not in Imago</a> Total: #{sda_not_imago.size}</p>")
-        check_html.puts("<p><a href='imago_not_sda.txt'>List all items in Imago not SDA</a> Total: #{imago_not_sda.size}</p>")
-        check_html.puts("<p><a href='symbiota_all.txt'>List all items in Symbiota</a> Total: #{symbiotaAll.size}</p>")
-        check_html.puts("<p><a href='symbiota_not_sda.txt'>List all items in Symbiota NOT in SDA</a> Total: #{symbiota_not_sda.size}</p>")
+        check_html.puts("<p><a href='imago_all_paleo.txt'>List all items in Imago</a> Total: #{idsAll.size}</p>")
+        check_html.puts("<p><a href='sda_all_paleo.txt'>List all items in SDA</a> Total: #{sdaAll.size}</p>")
+        check_html.puts("<p><a href='sda_not_imago_paleo.txt'>List all items in SDA not in Imago</a> Total: #{sda_not_imago.size}</p>")
+        check_html.puts("<p><a href='imago_not_sda_paleo.txt'>List all items in Imago not SDA</a> Total: #{imago_not_sda.size}</p>")
+        check_html.puts("<p><a href='symbiota_all_paleo.txt'>List all items in Symbiota</a> Total: #{symbiotaAll.size}</p>")
+        check_html.puts("<p><a href='symbiota_not_sda_paleo.txt'>List all items in Symbiota NOT in SDA</a> Total: #{symbiota_not_sda.size}</p>")
         check_html.close
 
         #write list of all files
