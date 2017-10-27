@@ -25,3 +25,13 @@ background: #fff; border: none;
 #masthead .container-fluid.bg-hdr h1{
 margin-left:15px;
 }
+
+
+/* fix white-on-white text on nav bar when logged in */
+.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+    color: black;
+    background-color: transparent;
+}
+
+
+
