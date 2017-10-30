@@ -23,15 +23,17 @@ module Cbrc
         #read in Symbiota file
         puts "READING IN SYMBIOTA FILE"
         File.readlines(Rails.root.join('public', 'symbiota_all_paleo.txt')).each do |line|
-          symbiotaAll.push(line.strip)
+          s=line.strip
+          s=s.split('/')[-1]
+          symbiotaAll.push(s)
         end
 
         #scan through images
         puts "STARING IMAGO IMAGE SCAN"
         x = 0
 	ids = []
-        Work.search_in_batches("#{Solrizer.solr_name('depositor', :symbol)}:\"	palcoll@indiana.edu\"", fl: "catalog_number_tesim") do |group|
-          idsAll.concat group.map { |doc| doc["catalog_number_tesim"].first }
+        FileSet.search_in_batches("#{Solrizer.solr_name('depositor', :symbol)}:\"palcoll@indiana.edu\"", fl: "title_tesim") do |group|
+          idsAll.concat group.map { |doc| doc["title_tesim"].first.chomp("-full.jpg") }
 	  x = x + 1000
 	  puts "Read #{x}"
         end
@@ -45,7 +47,6 @@ module Cbrc
         imago_not_sda = idsAll - sdaAll
         sda_not_imago = sdaAll - idsAll
         symbiota_not_sda = symbiotaAll - sdaAll
- #       etr_and_imago = etrAll & idsAll
 
         puts ("GENERATING HTML AND TEXT FILES");
         #delete any existing system check files
@@ -58,12 +59,16 @@ module Cbrc
         if Rails.root.join('public', 'symbiota_not_sda.txt').exist?
           File.delete(Rails.root.join('public', 'symbiota_not_sda.txt'))
         end
+        if Rails.root.join('public', 'symbiota_all_paleo_real.txt').exist?
+          File.delete(Rails.root.join('public', 'symbiota_all_paleo_real.txt'))
+        end
         #create new system check files and open them for writing
         check_html = File.new(Rails.root.join('public', 'paleocheck.html'), 'w')
         imago_all = File.new(Rails.root.join('public', 'imago_all_paleo.txt'), 'w')
         file_imago_not_sda = File.new(Rails.root.join('public', 'imago_not_sda_paleo.txt'), 'w')
         file_sda_not_imago = File.new(Rails.root.join('public', 'sda_not_imago_paleo.txt'), 'w')
         file_symbiota_not_sda = File.new(Rails.root.join('public', 'symbiota_not_sda_paleo.txt'), 'w')
+        file_symbiota = File.new(Rails.root.join('public', 'symbiota_all_paleo_real.txt'), 'w')
 
         #writing html file
         check_html.puts("<html><head><title>PALEO SYSTEM CHECK</title></head><body>")
@@ -75,7 +80,7 @@ module Cbrc
         check_html.puts("<p><a href='sda_all_paleo.txt'>List all items in SDA</a> Total: #{sdaAll.size}</p>")
         check_html.puts("<p><a href='sda_not_imago_paleo.txt'>List all items in SDA not in Imago</a> Total: #{sda_not_imago.size}</p>")
         check_html.puts("<p><a href='imago_not_sda_paleo.txt'>List all items in Imago not SDA</a> Total: #{imago_not_sda.size}</p>")
-        check_html.puts("<p><a href='symbiota_all_paleo.txt'>List all items in Symbiota</a> Total: #{symbiotaAll.size}</p>")
+        check_html.puts("<p><a href='symbiota_all_paleo_real.txt'>List all items in Symbiota</a> Total: #{symbiotaAll.size}</p>")
         check_html.puts("<p><a href='symbiota_not_sda_paleo.txt'>List all items in Symbiota NOT in SDA</a> Total: #{symbiota_not_sda.size}</p>")
         check_html.close
 
@@ -102,6 +107,12 @@ module Cbrc
           file_symbiota_not_sda.puts(id)
         end
         file_symbiota_not_sda.close
+
+        #file in Symbiota
+        symbiotaAll.each do |id|
+          file_symbiota.puts(id)
+        end
+        file_symbiota.close
 
       end
     end
