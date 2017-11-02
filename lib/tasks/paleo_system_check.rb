@@ -53,11 +53,11 @@ module Cbrc
         if Rails.root.join('public', 'paleocheck.html').exist?
           File.delete(Rails.root.join('public', 'paleocheck.html'))
         end
-        if Rails.root.join('public', 'imago_all.txt').exist?
-          File.delete(Rails.root.join('public', 'imago_all.txt'))
+        if Rails.root.join('public', 'imago_all_paleo.txt').exist?
+          File.delete(Rails.root.join('public', 'imago_all_paleo.txt'))
         end
-        if Rails.root.join('public', 'symbiota_not_sda.txt').exist?
-          File.delete(Rails.root.join('public', 'symbiota_not_sda.txt'))
+        if Rails.root.join('public', 'symbiota_not_sda_paleo.txt').exist?
+          File.delete(Rails.root.join('public', 'symbiota_not_sda_paleo.txt'))
         end
         if Rails.root.join('public', 'symbiota_all_paleo_real.txt').exist?
           File.delete(Rails.root.join('public', 'symbiota_all_paleo_real.txt'))
