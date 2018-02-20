@@ -36,7 +36,12 @@ module Cbrc
         begin
           # go through and ingest each line of the file
           CSV.foreach(data_file, headers:true) do |row|
-            cat_num = row['catalog_number'].to_s
+            cat_num = row['catalogNumber'].to_s
+            if (cat_num.empty?)
+              # old and new metadata naming schemes
+              cat_num = row['catalog_number'].to_s
+            end
+            puts cat_num
             # first check to make sure image exists for this line
             image_filename = "#{cat_num}-full.jpg"
             image_path = "#{data_dir}/#{image_filename}"
@@ -49,17 +54,49 @@ module Cbrc
             end
 
             gfs = Work.search_with_conditions catalog_number_sim: cat_num
-
-            multivalue_row = row.to_hash.map do |k,v|
+            multivalue_row = []
+            row.to_hash.map do |k,v|
               v ||= ''
+              if k == "basisOfRecord"
+                k = 'basis_of_record'
+              end
+              if k == "catalogNumber"
+                k = 'catalog_number'
+              end
+              if k == "class"
+                k = 'dwclass'
+              end
+              if k == "scientificName"
+                k = 'scientific_name'
+              end
+              if k == "scientificNameAuthorship"
+                k = 'scientific_name_authorship'
+              end
+              if k == "specificEpithet"
+                k = 'specific_epithet'
+              end
+              if k == "infraspecificEpithet"
+                k = 'infraspecific_epithet'
+              end
+              if k == "stateProvince"
+                k = 'state_province'
+              end
+
+              if (k != "catalog_number") && (k != "kingdom") && (k != "basis_of_record") && (k != "phylum") \
+                    && (k != "order") && (k != "family") && (k != "dwcclass") && (k != "genus") && (k != "specific_epithet") \
+                    && (k != "scientific_name") && (k != "scientific_name_authorship") \
+                    && (k != "country") && (k != "state_province") && (k != "county") && (k != "infraspecific_epithet")
+                next
+              end
+
               if Work.properties[k].try :multiple?
-                [k, [v]]
+                multivalue_row.push([k, [v]])
               else
-                [k, v]
+                multivalue_row.push([k, v])
               end
             end
 
-            #
+              #
             #if gfs.size > 1
             #  print "WARNING: Multiple results found for catalog number #{cat_num}. Only the first will be updated.\n"
             #end
