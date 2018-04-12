@@ -102,6 +102,28 @@ class Work < ActiveFedora::Base
     index.as :stored_searchable, :facetable
   end
 
+  #new for self deposit
+  property :institution_code, predicate: ::RDF::Vocab::DWC.institutionCode do |index|
+    index.as :stored_searchable, :facetable
+  end
+  property :occurrence_id, predicate: ::RDF::Vocab::DWC.occurrenceID do |index|
+    index.as :stored_searchable, :facetable
+  end
+  property :country_code, predicate: ::RDF::Vocab::DWC.countryCode do |index|
+    index.as :stored_searchable, :facetable
+  end
+  property :taxon_rank, predicate: ::RDF::Vocab::DWC.taxonRank do |index|
+    index.as :stored_searchable, :facetable
+  end
+  property :water_body, predicate: ::RDF::Vocab::DWC.waterBody do |index|
+    index.as :stored_searchable, :facetable
+  end
+  property :location_remarks, predicate: ::RDF::Vocab::DWC.locationRemarks do |index|
+    index.as :stored_searchable, :facetable
+  end
+  property :geodetic_datum, predicate: ::RDF::Vocab::DWC.geodeticDatum do |index|
+    index.as :stored_searchable, :facetable
+  end
 
   # Change this to restrict which works can be added as a child.
   # self.valid_child_concerns = []

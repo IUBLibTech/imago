@@ -13,6 +13,9 @@ module Sufia
     delegate :bed, :dwcmember, :formation, :group, :latest_age_or_highest_stage, :earliest_age_or_lowest_stage, :latest_period_or_highest_system,
              :earliest_period_or_lowest_system, to: :solr_document
 
+    #new for self-deposit
+    delegate :institution_code, :occurrence_id, :country_code, :taxon_rank, :water_body, :location_remarks, :geodetic_datum, to: :solr_document
+
     def editor?
       current_ability.can?(:edit, solr_document)
     end

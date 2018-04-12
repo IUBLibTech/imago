@@ -104,6 +104,29 @@ class SolrDocument
     self[Solrizer.solr_name('earliest_period_or_lowest_system')]
   end
 
+  #add self-deposit
+  def institution_code
+    self[Solrizer.solr_name('institution_code')]
+  end
+  def occurrence_id
+    self[Solrizer.solr_name('occurrence_id')]
+  end
+  def country_code
+    self[Solrizer.solr_name('country_code')]
+  end
+  def taxon_rank
+    self[Solrizer.solr_name('taxon_rank')]
+  end
+  def water_body
+    self[Solrizer.solr_name('water_body')]
+  end
+  def location_remarks
+    self[Solrizer.solr_name('location_remarks')]
+  end
+  def geodetic_datum
+    self[Solrizer.solr_name('geodetic_datum')]
+  end
+
   # self.unique_key = 'id'
 
   # Email uses the semantic field mappings below to generate the body of an email.

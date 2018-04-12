@@ -39,6 +39,15 @@ module CurationConcerns
     self.terms += [:latest_period_or_highest_system]
     self.terms += [:earliest_period_or_lowest_system]
 
+    #new for self-deposit
+    self.terms += [:institution_code]
+    self.terms += [:occurrence_id]
+    self.terms += [:country_code]
+    self.terms += [:taxon_rank]
+    self.terms += [:water_body]
+    self.terms += [:location_remarks]
+    self.terms += [:geodetic_datum]
+
     self.required_fields = [:title, :rights]
 
   end

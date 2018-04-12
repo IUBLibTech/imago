@@ -135,6 +135,15 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("latest_period_or_highest_system", :stored_searchable), label: "Latest Period Or Highest System"
     config.add_show_field solr_name("earliest_age_or_lowest_stage", :stored_searchable), label: "Earliest Age Or Lowest Stage"
     config.add_show_field solr_name("latest_age_or_highest_stage", :stored_searchable), label: "Latest Age Or Highest Stage"
+
+    #new for self deposit
+    config.add_show_field solr_name("institution_code", :stored_searchable), label: "Institution Code"
+    config.add_show_field solr_name("occurrence_id", :stored_searchable), label: "Occurrence ID"
+    config.add_show_field solr_name("country_code", :stored_searchable), label: "Country Code"
+    config.add_show_field solr_name("taxon_rank", :stored_searchable), label: "Taxon Rank"
+    config.add_show_field solr_name("water_body", :stored_searchable), label: "Water Body"
+    config.add_show_field solr_name("location_remarks", :stored_searchable), label: "Location Remarks"
+    config.add_show_field solr_name("geodetic_datum", :stored_searchable), label: "Geodetic Datum"
     
     config.add_show_field solr_name("kingdom", :stored_searchable), label: "Kingdom"
     config.add_show_field solr_name("phylum", :stored_searchable), label: "Phylum or Division"
