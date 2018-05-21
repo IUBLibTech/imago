@@ -21,7 +21,7 @@ class PurlController < ApplicationController
           end
         end
       else
-        #herbarium
+        # assume herbarium
         realid = (Work.search_with_conditions catalog_number_sim: params[:id]).first['hasRelatedImage_ssim'].first
       end
       if (realid == '')
@@ -49,7 +49,7 @@ class PurlController < ApplicationController
           end
         end
       else
-        #herbarium
+        # assume herbarium
         realid = (Work.search_with_conditions catalog_number_sim: params[:id]).first['hasRelatedImage_ssim'].first
       end
       if (realid == '')
@@ -69,7 +69,7 @@ class PurlController < ApplicationController
         tempid = "IUPC" + tempid;
         realid = (Work.search_with_conditions catalog_number_sim: tempid).first['id']
       else
-          #herbarium
+          # assume herbarium
           realid = (Work.search_with_conditions catalog_number_sim: params[:id]).first['id']
       end
     rescue

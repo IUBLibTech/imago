@@ -20,8 +20,6 @@ class CatalogController < ApplicationController
     config.view.gallery.partials = [:index_header, :index]
     config.view.masonry.partials = [:index]
     config.view.slideshow.partials = [:index]
-
-
     config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
     config.show.partials.insert(1, :openseadragon)
     # default advanced config values
@@ -30,20 +28,16 @@ class CatalogController < ApplicationController
     config.advanced_search[:url_key] ||= 'advanced'
     config.advanced_search[:query_parser] ||= 'dismax'
     config.advanced_search[:form_solr_parameters] ||= {}
-
     config.search_builder_class = Sufia::SearchBuilder
-
     # Show gallery view
     config.view.gallery.partials = [:index_header, :index]
     config.view.slideshow.partials = [:index]
-
     ## Default parameters to send to solr for all search-like requests. See also SolrHelper#solr_search_params
     config.default_solr_params = {
       qt: "search",
       rows: 10,
       qf: "title_tesim name_tesim"
     }
-
     # solr field configuration for document/show views
     config.index.title_field = solr_name("title", :stored_searchable)
     config.index.display_type_field = solr_name("has_model", :symbol)
@@ -51,14 +45,8 @@ class CatalogController < ApplicationController
 
     # solr fields that will be treated as facets by the blacklight application
     #   The ordering of the field names is the order of the display
-
-
     config.add_facet_field solr_name("collection_code", :facetable), label: "Collection", limit: 5
     config.add_facet_field solr_name("keyword", :facetable), label: "Keyword", limit: 5
-    # config.add_facet_field solr_name("subject", :facetable), label: "Subject", limit: 5
-    # config.add_facet_field solr_name("language", :facetable), label: "Language", limit: 5
-    # config.add_facet_field solr_name("based_near", :facetable), label: "Location", limit: 5
-    # config.add_facet_field solr_name("publisher", :facetable), label: "Publisher", limit: 5
     config.add_facet_field solr_name("file_format", :facetable), label: "File Format", limit: 5
     config.add_facet_field solr_name("kingdom", :facetable), label: "Kingdom", limit: 5
     config.add_facet_field solr_name("phylum", :facetable), label: "Phylum or Division", limit: 5
@@ -69,7 +57,6 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name("scientific_name", :facetable), label: "Scientific Name", limit: 5
     config.add_facet_field solr_name("country", :facetable), label: "Country", limit: 5
     config.add_facet_field solr_name("county", :facetable), label: "County", limit: 5
-
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request
@@ -111,10 +98,8 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("date_uploaded", :stored_searchable), label: "Date Uploaded"
     config.add_show_field solr_name("date_modified", :stored_searchable), label: "Date Modified"
     config.add_show_field solr_name("date_created", :stored_searchable), label: "Date Created"
-
     config.add_show_field solr_name("resource_type", :stored_searchable), label: "Resource Type"
     config.add_show_field solr_name("format", :stored_searchable), label: "File Format"
-
     config.add_show_field solr_name("catalog_number", :stored_searchable), label: "Catalog Number"
     config.add_show_field solr_name("other_catalog_numbers", :stored_searchable), label: "Other Catalog Numbers"
     config.add_show_field solr_name("continent", :stored_searchable), label: "Continent"
@@ -125,7 +110,6 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("locality", :stored_searchable), label: "Locality"
     config.add_show_field solr_name("decimal_latitude", :stored_searchable), label: "Decimal Latitude"
     config.add_show_field solr_name("decimal_longitude", :stored_searchable), label: "Decimal Longitude"
-
     #new for paleo
     config.add_show_field solr_name("group", :stored_searchable), label: "Group"
     config.add_show_field solr_name("formation", :stored_searchable), label: "Formation"
@@ -135,7 +119,6 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("latest_period_or_highest_system", :stored_searchable), label: "Latest Period Or Highest System"
     config.add_show_field solr_name("earliest_age_or_lowest_stage", :stored_searchable), label: "Earliest Age Or Lowest Stage"
     config.add_show_field solr_name("latest_age_or_highest_stage", :stored_searchable), label: "Latest Age Or Highest Stage"
-
     #new for self deposit
     config.add_show_field solr_name("institution_code", :stored_searchable), label: "Institution Code"
     config.add_show_field solr_name("occurrence_id", :stored_searchable), label: "Occurrence ID"
@@ -144,7 +127,7 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("water_body", :stored_searchable), label: "Water Body"
     config.add_show_field solr_name("location_remarks", :stored_searchable), label: "Location Remarks"
     config.add_show_field solr_name("geodetic_datum", :stored_searchable), label: "Geodetic Datum"
-    
+
     config.add_show_field solr_name("kingdom", :stored_searchable), label: "Kingdom"
     config.add_show_field solr_name("phylum", :stored_searchable), label: "Phylum or Division"
     config.add_show_field solr_name("dwcclass", :stored_searchable), label: "Class"
