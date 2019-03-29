@@ -1,0 +1,7 @@
+#source .secrets.sh
+export USER=app_imago
+export USERNAME=app_imago
+export HOME=/home/app_imago
+export PATH=/home/app_imago/bin:$PATH
+
+bundle exec puma -C config/puma.rb -b tcp://0.0.0.0:8302
