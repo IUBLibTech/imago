@@ -1,9 +1,11 @@
 #
 # Ruby process for batch import to Herbarium collection, called by rake tasks
+# This script picks up all the 'extra' material (bryophyte, lichen, moss, etc.) that works slightly differently,
+# with different file names
 #
-# This is used to import a batch for the Herbarium, using an associated CSV file
-# Task is run with 'rake cbrc:herbarium_batch_import:herbarium_batch_import[filename.csv,email@example.com,"NO"]
-# Images are in same directory as CSV file, filename format "{catalog_number}-full.jpg"
+# This is used to import a batch of 'extras' for the Herbarium, using an associated CSV file
+# Task is run with 'rake cbrc:herbarium_batch_import_extras:herbarium_batch_import_extras[filename.csv,email@example.com,"NO"]
+# Images should be in same directory as CSV file
 # Files will be deleted after ingest only if deleteafteringest is set to "YES"
 #
 
@@ -11,14 +13,14 @@ require 'net/smtp'
 
 module Cbrc
 
-  module HerbariumBatchImport
+  module HerbariumBatchImportExtras
 
     module Tasks
 
-      def Tasks.herbarium_batch_import(data_file, owner_username, deleteafteringest)
+      def Tasks.herbarium_batch_import_extras(data_file, owner_username, deleteafteringest)
         print "------\n"
-        print "Ingest batch file started at " + Time.now.utc.iso8601 + "\n"
-        emailbody = "Ingest batch file started at " + Time.now.utc.iso8601 + "\n"
+        print "Ingest batch file (EXTRAS) started at " + Time.now.utc.iso8601 + "\n"
+        emailbody = "Ingest batch file (EXTRAS) started at " + Time.now.utc.iso8601 + "\n"
         print "------\n"
         data_dir = File.dirname data_file
         unless File.exists?(data_dir)
@@ -44,17 +46,18 @@ module Cbrc
             if (cat_num.empty?)
               next
             end
-            puts cat_num
-            # first check to make sure image exists for this line
-            image_filename = "#{cat_num}-full.jpg"
-            image_path = "#{data_dir}/#{image_filename}"
-            if File.file?(image_path)
-              print "Image found for #{cat_num}.\n"
-              emailbody = emailbody + "Image found for #{cat_num}.\n"
-            else
-              print "WARNING: Could not import image for #{cat_num}. Not importing this object\n"
+            puts "Catalog number found: " + cat_num
+            #search for matching files in the directory
+            thefiles = Dir.glob("#{data_dir}/#{cat_num}*.jpg")
+            thefiles.sort!
+            if (thefiles.empty?)
+              #nothing to do here
               next
             end
+            #thefiles array of files is now ready for ingesting
+            print "" + thefiles.count.to_s + " image(s) found for #{cat_num}.\n"
+            emailbody = emailbody + "" + thefiles.count.to_s + " image(s) found for #{cat_num}.\n"
+            #next, prep metadata
 
             gfs = Work.search_with_conditions catalog_number_sim: cat_num
             multivalue_row = []
@@ -99,11 +102,6 @@ module Cbrc
               end
             end
 
-              #
-            #if gfs.size > 1
-            #  print "WARNING: Multiple results found for catalog number #{cat_num}. Only the first will be updated.\n"
-            #end
-
             if gfs.size == 0
 
               gf = Work.create!(multivalue_row.to_h) do |obj|
@@ -117,51 +115,25 @@ module Cbrc
                 obj.set_read_groups( ["public"], [])
               end
 
-              file_set = ::FileSet.new
-              file_set_actor = CurationConcerns::Actors::FileSetActor.new(file_set, owner)
-              file_set_actor.create_metadata(gf, visibility: gf.visibility)
-              file_set_actor.create_content(File.open(image_path))
-              if deleteafteringest == "YES"
-                File.delete(image_path)
+              #add all files that we found
+              thefiles.each do |singlefile|
+                puts "Adding image #{singlefile}"
+                file_set = ::FileSet.new
+                file_set_actor = CurationConcerns::Actors::FileSetActor.new(file_set, owner)
+                file_set_actor.create_metadata(gf, visibility: gf.visibility)
+                file_set_actor.create_content(File.open(singlefile))
+                if deleteafteringest == "YES"
+                  File.delete(singlefile)
+                end
               end
 
             else
               print "Existing record found for #{cat_num}.\n"
-              emailbody = emailbody + "Existing record found for #{cat_num}.\n"
-              gf = Work.find(gfs.first['id'])
-              gf.update(multivalue_row.to_h)
-
-              gf.title = [cat_num]
-              gf.depositor = owner.email
-              gf.edit_users = [owner.email]
-              gf.rights = ['http://creativecommons.org/licenses/by-nc/3.0/us/']
-              gf.collection_code = ['herbarium']
-              gf.identifier = ["http://purl.dlib.indiana.edu/iudl/herbarium/#{cat_num}"]
-              gf.set_read_groups( ["public"], [])
-
-              #delete old image (assumes only 1)
-              FileSet.find((Work.search_with_conditions id: gf.id).first['hasRelatedImage_ssim'].first).destroy
-
-              #add new image
-              file_set = ::FileSet.new
-              file_set_actor = CurationConcerns::Actors::FileSetActor.new(file_set, owner)
-              file_set_actor.create_metadata(gf, visibility: gf.visibility)
-              file_set_actor.create_content(File.open(image_path))
-
-              if gf.save
-                print "Updated #{cat_num}.\n"
-                emailbody = emailbody + "Updated #{cat_num}.\n"
-              else
-                print "WARNING: Update failed: #{gf.errors.full_messages}\n"
-                emailbody = emailbody + "WARNING: Update failed: #{gf.errors.full_messages}\n"
-              end
-              if deleteafteringest == "YES"
-                File.delete(image_path)
-              end
+              puts "CAN'T UPDATE EXISTING RECORD WITH THIS SCRIPT. ITEM WILL BE SKIPPED\n"
             end
           end
         rescue Exception => e
-          print "ERROR - script stopped unexpectedly\n"
+          print "ERROR - script stopped unexpectedly\n" + e.backtrace
           emailbody = emailbody + "ERROR - script stopped unexpectedly\n"
           emailbody = emailbody + e.message
           emailbody = emailbody + "\n"
@@ -183,7 +155,7 @@ END_OF_MESSAGE
 
           Net::SMTP.start("127.0.0.1") do |smtp|
             smtp.send_message msg, "fromemail", "toemail"
-          end 
+          end
         end
       end
     end
