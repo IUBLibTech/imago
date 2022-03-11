@@ -12,13 +12,11 @@ Rails.application.routes.draw do
 
 
 
-  # modified for imago to disable account creation through the interface
+  # modified to disable account creation through the interface
   # see http://stackoverflow.com/questions/6734323/how-do-i-remove-the-devise-route-to-sign-up
   devise_for :users, :controllers => { :registrations => "registrations" }
   mount CurationConcerns::Engine, at: '/'
   resources :welcome, only: 'index'
-  
-  #modified for imago to redirect home page to main 'browse' page
   #root 'sufia/homepage#index'
   root :to => redirect('/catalog')
   curation_concerns_collections
@@ -38,16 +36,15 @@ Rails.application.routes.draw do
     end
   end
 
-  #add webdeposit as a static page
-  get ':action' => 'static#:action', constraints: { action: /webdeposit/ }, as: :static
-
-  # modified for imago to add routes for IU PURLS
+  #add routes for IU PURLS
+  
   get '/purl/thumbnail/:id' => 'purl#thumbnail'
   get '/purl/:id' => 'purl#default'
   get '/purl/full/:id' => 'purl#full'
 
   #this one isn't implemented yet
   #get '/purl/archive/:id' => ''
+
 
 
   # The priority is based upon order of creation: first created -> highest priority.
