@@ -6,6 +6,6 @@ en:
 #    institution_name_full:   "The Institution Name"
     account_name:       ""
     directory:
-    suffix:           "@indiana.edu"
+      suffix:           "@indiana.edu"
     footer:
-    copyright_html: ""
+      copyright_html: ""
