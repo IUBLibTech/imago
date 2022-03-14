@@ -1,5 +1,0 @@
-#!/bin/bash
-
-cd /srv/services/imago-devel-rails-8302
-cat ./bin/rails_cmd | scl enable rh-ruby23 rh-ror42 -
- 

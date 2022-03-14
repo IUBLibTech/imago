@@ -1,5 +1,0 @@
-#!/bin/bash
-
-cd /srv/services/imago-devel-rails-8302 &&
-kill `cat tmp/pids/server.pid` 
-#kill -TERM `cat tmp/pids/sidekiq.pid`

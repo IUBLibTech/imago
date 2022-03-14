@@ -9,6 +9,17 @@ config/blacklight.yml
 config/solr.yml
 config/fedora.yml
 
+# service runtime stuff
+bin/iul*
+.iul*
+bin/setenv
+dbconfig.txt
+deps/
+
+# Local README is used for automatic documentation; README.md should be used
+# for public facing documentation committed to the repo
+README
+
 #db-related
 dump.rdb
 
