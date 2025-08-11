@@ -3,42 +3,55 @@ class ReindexSolrToSolr
   # Only url is needed for new solr but other config options can be passed in addition
   attr_accessor :old_solr, :new_solr
 
-  def initialize(new_solr_config)
-    @old_solr = ActiveFedora.solr
+  def initialize(new_solr_config:, old_solr_config:)
+    @old_solr = ActiveFedora::SolrService.new(old_solr_config) if old_solr_config.present?
+    @old_solr ||= ActiveFedora.solr
     @new_solr = ActiveFedora::SolrService.new(new_solr_config)
   end
 
   # Example reindexing a delta via query: "timestamp:[#{(DateTime.now - 1.day).utc.iso8601} TO *]"
   def reindex(query: "*", batch_size: 1000)
+    puts "Old solr: #{@old_solr.conn.uri.to_s}"
+    puts "New solr: #{@new_solr.conn.uri.to_s}"
+
     total_docs = old_solr.conn.get('select', params: {q: query, rows: 0})["response"]["numFound"]
     if total_docs == 0
       puts "No documents found to reindex."
       return
     end
 
-    puts "Starting reindex at #{DateTime.now.utc.iso8601}"
-    docs_processed = 0
+    puts "Starting reindex of #{total_docs} docs at #{DateTime.now.utc.iso8601}"
+    docs_processed = total_docs_processed = 0
     while docs_processed < total_docs
-      docs = old_solr.conn.get('select', params: {q: query, rows: batch_size, start: docs_processed})["response"]["docs"]
+      docs = old_solr.conn.get('select', params: {q: query, fl: '*', sort: 'timestamp asc', rows: batch_size, start: docs_processed})["response"]["docs"]
       reconstructed_docs = docs.collect do |doc|
         begin
           SolrDocReconstructor.new(doc).reconstruct
         rescue RuntimeError => e
           puts "Error reconstructing #{doc["id"]}...falling back to ActiveFedora method"
           puts e.message
-          ActiveFedora::Base.find(doc["id"]).to_solr
+          begin
+            ActiveFedora::Base.find(doc["id"]).to_solr
+          rescue Ldp::Gone
+            puts "Object no longer exists in Fedora (Ldp::Gone)"
+          rescue RuntimeError => e2
+            puts "Error reindexing from Fedora"
+            puts e.message
+          end
         end
       end
 
+      reconstructed_docs.compact!
       new_solr.conn.add(reconstructed_docs, {softCommit: true})
       docs_processed += docs.size
-      puts "Migrated #{docs_processed} out of #{total_docs}"
+      total_docs_processed += reconstructed_docs.size
+      puts "Migrated #{total_docs_processed} out of #{total_docs}"
     end
     puts "Committing..."
     new_solr.conn.commit
     puts "Optimizing..."
     new_solr.conn.optimize
-    puts "Complete"
+    puts "Complete at #{DateTime.now.utc.iso8601}"
   end
 
   class SolrDocReconstructor
@@ -62,7 +75,7 @@ class ReindexSolrToSolr
     private
 
     def detect_class(doc)
-      doc["has_model_ssim"].first.safe_constantize || Object
+      doc["has_model_ssim"]&.first&.safe_constantize || Object
     end
 
     def find_value(field, stored_def, new_doc)
@@ -147,39 +160,41 @@ class ReindexSolrToSolr
     end
 
     def reconstruct_class(new_doc, klass)
-      class_metadata_fields = case klass
-      when Collection
-        {}
-      when FileSet
-        {
-          # Hyrax::FileSetIndexer
-          "file_format_sim" => "file_format_tesim",
-          "all_text_timv" => "all_text_tsimv" # tsimv version doesn't exist but timv is unused in imago so doesn't matter?
-        }
-      when Work
-        sufia_fields = if klass.ancestors.include?(Sufia::WorkBehavior)
-          {
-            # Sufia::WorkIndexer
-            "resource_type_sim" => [],
-            "admin_set_sim" => "admin_set_tesim",
-          }
-        else
-          {}
-        end
-        WORK_METADATA_FIELDS.collect { |k| ["#{k}_sim","#{k}_tesim"] }.to_h.merge(sufia_fields)
-      end
+      class_metadata_fields = case klass.to_s
+                              when Collection.to_s
+                                {}
+                              when FileSet.to_s
+                                {
+                                  # Hyrax::FileSetIndexer
+                                  "file_format_sim" => "file_format_tesim",
+                                  "all_text_timv" => "all_text_tsimv" # tsimv version doesn't exist but timv is unused in imago so doesn't matter?
+                                }
+                              when Work.to_s
+                                sufia_fields = if klass.ancestors.include?(Sufia::WorkBehavior)
+                                  {
+                                    # Sufia::WorkIndexer
+                                    "resource_type_sim" => [],
+                                    "admin_set_sim" => "admin_set_tesim",
+                                  }
+                                else
+                                  {}
+                                end
+                                WORK_METADATA_FIELDS.collect { |k| ["#{k}_sim","#{k}_tesim"] }.to_h.merge(sufia_fields)
+                              else
+                                {}
+                              end
 
       class_metadata_fields.each { |unstored, stored| new_doc[unstored] = new_doc[stored] }
 
       # generic_type_sim
-      generic_type = case klass
-      when Collection
-        "Collection"
-      when Work
-        "Work"
-      else
-        nil
-      end
+      generic_type = case klass.to_s
+                     when Collection.to_s
+                       "Collection"
+                     when Work.to_s
+                       "Work"
+                     else
+                       nil
+                     end
       new_doc["generic_type_sim"] = [generic_type]
 
       new_doc
@@ -203,91 +218,91 @@ class ReindexSolrToSolr
     end
   end
 end
-end
 
 # Taken from HashDiff gem and modified to sort arrays given rdf is non-deterministic as to order of values
 module HashDiff
-class NO_VALUE; end
+  class NO_VALUE; end
 
-class Comparison
-  def initialize(left, right)
-    @left  = left
-    @right = right
-  end
-
-  attr_reader :left, :right
-
-  def diff
-    @diff ||= find_differences { |l, r| [l, r] }
-  end
-
-  def left_diff
-    @left_diff ||= find_differences { |_, r| r }
-  end
-
-  def right_diff
-    @right_diff ||= find_differences { |l, _| l }
-  end
-
-  protected
-
-  def find_differences(&reporter)
-    combined_keys.each_with_object({ }, &comparison_strategy(reporter))
-  end
-
-  private
-
-  def comparison_strategy(reporter)
-    lambda do |key, diff|
-      diff[key] = report_difference(key, reporter) unless equal?(key)
+  class Comparison
+    def initialize(left, right)
+      @left  = left
+      @right = right
     end
-  end
 
-  def combined_keys
-    if hash?(left) && hash?(right) then
-      (left.keys + right.keys).uniq
-    elsif array?(left) && array?(right) then
-      (0..[left.size, right.size].max).to_a
-    else
-      raise ArgumentError, "Don't know how to extract keys. Neither arrays nor hashes given"
+    attr_reader :left, :right
+
+    def diff
+      @diff ||= find_differences { |l, r| [l, r] }
     end
-  end
 
-  def equal?(key)
-    value_with_default(left, key) == value_with_default(right, key)
-  end
-
-  def hash?(value)
-    value.is_a?(Hash)
-  end
-
-  def array?(value)
-    value.is_a?(Array)
-  end
-
-  def comparable_hash?(key)
-    hash?(left[key]) && hash?(right[key])
-  end
-
-  def comparable_array?(key)
-    array?(left[key]) && array?(right[key])
-  end
-
-  def report_difference(key, reporter)
-    if comparable_hash?(key)
-      self.class.new(left[key], right[key]).find_differences(&reporter)
-    elsif comparable_array?(key)
-      self.class.new(left[key], right[key]).find_differences(&reporter)
-    else
-      reporter.call(
-        value_with_default(left, key),
-        value_with_default(right, key)
-      )
+    def left_diff
+      @left_diff ||= find_differences { |_, r| r }
     end
-  end
 
-  def value_with_default(obj, key)
-    value = obj.fetch(key, NO_VALUE)
-    value.sort if array?(value)
+    def right_diff
+      @right_diff ||= find_differences { |l, _| l }
+    end
+
+    protected
+
+    def find_differences(&reporter)
+      combined_keys.each_with_object({ }, &comparison_strategy(reporter))
+    end
+
+    private
+
+    def comparison_strategy(reporter)
+      lambda do |key, diff|
+        diff[key] = report_difference(key, reporter) unless equal?(key)
+      end
+    end
+
+    def combined_keys
+      if hash?(left) && hash?(right) then
+        (left.keys + right.keys).uniq
+      elsif array?(left) && array?(right) then
+        (0..[left.size, right.size].max).to_a
+      else
+        raise ArgumentError, "Don't know how to extract keys. Neither arrays nor hashes given"
+      end
+    end
+
+    def equal?(key)
+      value_with_default(left, key) == value_with_default(right, key)
+    end
+
+    def hash?(value)
+      value.is_a?(Hash)
+    end
+
+    def array?(value)
+      value.is_a?(Array)
+    end
+
+    def comparable_hash?(key)
+      hash?(left[key]) && hash?(right[key])
+    end
+
+    def comparable_array?(key)
+      array?(left[key]) && array?(right[key])
+    end
+
+    def report_difference(key, reporter)
+      if comparable_hash?(key)
+        self.class.new(left[key], right[key]).find_differences(&reporter)
+      elsif comparable_array?(key)
+        self.class.new(left[key], right[key]).find_differences(&reporter)
+      else
+        reporter.call(
+          value_with_default(left, key),
+          value_with_default(right, key)
+        )
+      end
+    end
+
+    def value_with_default(obj, key)
+      value = obj.fetch(key, NO_VALUE)
+      value.sort if array?(value)
+    end
   end
 end
