@@ -26,9 +26,9 @@ class CatalogController < ApplicationController
     config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
     # config.advanced_search[:qt] ||= 'advanced'
     config.advanced_search[:url_key] ||= 'advanced'
-    config.advanced_search[:query_parser] ||= 'dismax'
+    config.advanced_search[:query_parser] ||= 'lucene'
     config.advanced_search[:form_solr_parameters] ||= {}
-    config.search_builder_class = Sufia::SearchBuilder
+    config.search_builder_class = Sufia::CatalogSearchBuilder
     # Show gallery view
     config.view.gallery.partials = [:index_header, :index]
     config.view.slideshow.partials = [:index]
@@ -36,7 +36,8 @@ class CatalogController < ApplicationController
     config.default_solr_params = {
       qt: "search",
       rows: 10,
-      qf: "title_tesim name_tesim"
+      qf: "title_tesim name_tesim",
+      defType: 'lucene'
     }
     # solr field configuration for document/show views
     config.index.title_field = solr_name("title", :stored_searchable)

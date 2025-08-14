@@ -108,3 +108,15 @@ Date::DATE_FORMATS[:standard] = "%m/%d/%Y"
 Qa::Authorities::Local.register_subauthority('subjects', 'Qa::Authorities::Local::TableBasedAuthority')
 Qa::Authorities::Local.register_subauthority('languages', 'Qa::Authorities::Local::TableBasedAuthority')
 Qa::Authorities::Local.register_subauthority('genres', 'Qa::Authorities::Local::TableBasedAuthority')
+
+Sufia::CatalogSearchBuilder.class_eval do
+  # show both works that match the query and works that contain files that match the query
+  def show_works_or_works_that_contain_files(solr_parameters)
+    if solr_parameters[:q].blank?
+      solr_parameters[:q] = "*:*"
+    else
+      solr_parameters[:user_query] = solr_parameters[:q]
+      solr_parameters[:q] = new_query
+    end
+  end
+end
