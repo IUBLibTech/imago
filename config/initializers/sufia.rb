@@ -117,6 +117,7 @@ Sufia::CatalogSearchBuilder.class_eval do
     else
       solr_parameters[:user_query] = solr_parameters[:q]
       solr_parameters[:q] = new_query
+      solr_parameters[:defType] = 'lucene'
     end
   end
 end
