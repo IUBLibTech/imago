@@ -1,7 +1,9 @@
 # Place any default configuration for solr_wrapper here
-version: 6.6.6
+# version: 9.8
 # port: 8983
 instance_dir: tmp/solr-development
+env:
+  SOLR_MODULES: analysis-extras,extraction
 collection:
   persist: true
   dir: solr/config/
